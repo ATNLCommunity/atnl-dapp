@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>极品羊羔预售抢购</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/bootstrapValidator.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="top-detail" style="padding-bottom: 10px">
+    <div class="detail-img">
+        <img src="./resource/images/product_1.png" class="img-responsive" width="100%">
+    </div>
+    <div class="detail-info">
+        <div class="detail-info-title atnl-color-ms" id="productTitle"></div>
+        <div class="detail-info-title atnl-color-ms" style="font-size: 13px" id="detailText"></div>
+        <div class="atnl-color-qd">
+            <span class="detail-info-price">￥<span id="productPrice"></span></span>
+            <span class="detail-info-yf">免运费</span>
+            <span class="detail-info-surplus atnl-color-ms">剩余数量<span id="productCount"></span></span>
+        </div>
+    </div>
+</div>
+<div class="content-detail" style="padding-bottom: 45px">
+    <img src="" class="img-responsive" width="100%">
+</div>
+<div class="bottom-detail navbar-fixed-bottom">
+    <div class="detail-kf" id="kf">
+        <div class="kf-iocn"><img src="./resource/images/kefu_icon.png"></div>
+        <div class="kf-text">客服</div>
+    </div>
+    <!--<div class="detail-sendtime"><span id="sendDate"></span>开始发货</div>-->
+    <div class="detail-buy"><a href="#" class="atnl-color-ms" id="btnBuy">立即购买</a></div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     style="transform: translateY(10%)"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body" id="couponList">
+                <img src="resource/images/erweima.png" class="img-responsive">
+            </div>
+            <div class="modal-footer " style="text-align: center">
+                <span>扫一扫添加客服微信</span>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script src="./resource/js/functions.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var pid = getParam('pid');
+//        $("#btnBuy").attr('href','addorder.html?pid='+pid);
+        post('product/get?pid=' + pid, {}, function (data) {
+            if (data.err != "") {
+
+            } else {
+                $("#productTitle").html(data.data.name);
+                $("#productPrice").html(data.data.price);
+
+                $("#productCount").html(data.data.count);
+                $("#sendDate").html(data.data.send_date);
+                $("#detailText").html(data.data.detail);
+                $(".detail-img img").attr('src',data.data.logo);
+                $(".content-detail img").attr('src',data.data.url);
+                if(data.data.count==0){
+                    $("#btnBuy").attr('href',"#");
+                    $("#btnBuy").text("售罄");
+                }else{
+                    $("#btnBuy").attr('href','addorder.html?pid='+pid);
+                }
+            }
+        });
+
+        $("#kf").click(function(){
+            //alert('将弹出优惠券框');
+            $("#myModal").modal('show');
+        })
+    });
+
+</script>
+</body>
+</html>

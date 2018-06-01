@@ -1,0 +1,154 @@
+协议说明:
+	我们尽量采用ajax的方式来访问数据。
+	参数兼容get、post的方式。
+	返回值是一个json格式的数据结构，例如{"data":[{"tdate":"2018-04-16","step":1000,"did":"589467020039582"},{"tdate":"2018-04-17","step":1000,"did":"589467020039640"}],"err":""}
+	err字段描述错误信息，当不为空的时候，即发生了错误，可以直接把err的字符串信息打印出来
+	data字段是根据不同协议返回的不同数据结构
+
+1.获取羊记步信息的列表
+	api：http://39.106.126.166/app/look/stepAll
+	参数：无
+	返回值: {"data":[{"tdate":"2018-04-16","step":1000,"did":"589467020039582"},{"tdate":"2018-04-17","step":1000,"did":"589467020039640"}],"err":""}
+		tdate：最后上传日期
+		step：步数
+		did：设备码
+	
+2.获取某只羊的记步信息
+	api：http://39.106.126.166/app/look/step?did=xxxx
+	参数：did为养对应的设备id
+	返回值: {"data":[{"tdate":"2018-04-16","step":1000}],"err":""}
+		tdate：最后上传日期
+		step：步数
+		did：设备码
+	
+3.获取所有羊的当前gps信息
+	api：http://39.106.126.166/app/look/gpsAll
+	参数：无
+	返回值{"data":[{"high":0,"lon":43.651,"id":1,"time":"2018-04-17 06:19:55","did":"589467020039640","lat":122.247}],"err":""}
+		high：海拔
+		lon：经度
+		lat: 纬度
+		id：信息索引号
+		time: 更新时间
+		did：设备码
+	
+4.获取某只羊某天的gps定位点列表
+	api: http://39.106.126.166/app/look/gps?did=xxxx&date=yyy
+	参数：
+		did: 养对应的设备id
+		date: 要获取的日期，可选，不填的时候为获取当天的
+	返回值: {"data":[{"high":0,"lon":43.651,"id":1,"time":"2018-04-17 06:19:55","did":"589467020039640","lat":122.247},{"high":0,"lon":43.6507,"id":2,"time":"2018-04-17 07:52:29","did":"589467020039640","lat":122.247},{"high":0,"lon":43.6613,"id":3,"time":"2018-04-17 08:12:58","did":"589467020039640","lat":122.253}],"err":""}
+		high：海拔
+		lon：经度
+		lat: 纬度
+		id：信息索引号
+		time: 更新时间
+		did：设备码
+
+5.获取商品列表
+	api：http://wx.atunala.com/app/product/list
+	参数：无
+	返回值：{"err":"","data":[{"send_date":"2018-12-01","price":0.01,"eth":0.88,"count":500,"name":"六月羔羊 预售","expire_time":"2018-05-31 00:00:00","id":1}]}
+		id: 商品id
+		send_date:发货时间
+		price：rmb价格
+		eth: eth价格
+		count: 剩余数量
+		name: 商品名
+		expire_time: 截止时间
+
+6.获取我的优惠券列表
+	api：http://wx.atunala.com/app/quan/mine
+	参数：无
+	返回值：{"err":"","data":[{"uid":6,"money":288.0,"create_time":"2018-04-23 23:44:16","name":"预售券","expire_time":"2020-12-31 00:00:00","id":1,"state":0},{"uid":5,"money":288.0,"create_time":"2018-04-23 23:44:26","name":"预售券","expire_time":"2020-12-31 00:00:00","id":2,"state":0}]}
+		id: 优惠券id
+		uid: 用户id
+		name: 名称
+		money: 金额
+		state：状态
+		expire_time: 过期时间
+		create_time: 创建时间
+
+7.下单
+	api: http://wx.atunala.com/app/order/create?count=1&payType=0&addr=地址&name=名字&msg=留言&pid=1&qid=0
+	参数：
+		count： 购买数量
+		payType： 支付类型 0 微信支付， 1 ETH支付
+		addr: 送货地址
+		name: 姓名
+		msg: 留言
+		pid: 商品id
+		qid：优惠券id
+	返回值: {"err":"","data":{"msg":"æ\u0088\u0091æ\u0098¯ç\u0095\u0099è¨\u0080","count":1,"pid":1,"qid":0,"uid":6,"price":0.01,"eth":0.88,"name":"æ\u0088\u0091æ\u0098¯å\u0090\u008Då­\u0097","state":1,"id":2,"realprice":0.01,"addr":"æ\u0088\u0091æ\u0098¯å\u009C°å\u009D\u0080","paytype":0}}
+		id: 订单id
+		uid: 用户id
+		count： 购买数量
+		payType： 支付类型 0 微信支付， 1 ETH支付
+		addr: 送货地址
+		name: 姓名
+		msg: 留言
+		pid: 商品id
+		qid：优惠券id
+		price : 合计价格
+		realprice : 最终价格
+		eth : ETH支付价格
+		state ：订单状态 1为代付款，2为未发货 3为已发货 4为完成，0为取消
+		paystate : 支付状态，0 为未支付，1为已支付
+		payment : 支付金额
+		create_time: 创建时间
+		pay_time:支付时间
+		extra: 羊的信息
+
+8.微信支付
+	api: http://wx.atunala.com/app/wx/pay?oid=2
+	参数：oid: 订单id
+	返回值：调用成功后会自动跳到 http://wx.atunala.com/wx/pay.html中
+
+9.订单详情
+	api：http://wx.atunala.com/app/order/get?oid=2
+	参数：oid： 订单id
+	返回值：{"err":"","data":{"msg":"æ\u0088\u0091æ\u0098¯ç\u0095\u0099è¨\u0080","create_time":null,"count":1,"pid":1,"paystate":0,"qid":0,"pay_time":null,"uid":6,"price":0.01,"extra":"","eth":0.88,"name":"æ\u0088\u0091æ\u0098¯å\u0090\u008Då­\u0097","payment":null,"id":2,"state":1,"realprice":0.01,"addr":"æ\u0088\u0091æ\u0098¯å\u009C°å\u009D\u0080","paytype":0}}
+		id: 订单id
+		uid: 用户id
+		count： 购买数量
+		payType： 支付类型 0 微信支付， 1 ETH支付
+		addr: 送货地址
+		name: 姓名
+		msg: 留言
+		pid: 商品id
+		qid：优惠券id
+		price : 合计价格
+		realprice : 最终价格
+		eth : ETH支付价格
+		state ：订单状态 1为代付款，2为未发货 3为已发货 4为完成，0为取消
+		paystate : 支付状态，0 为未支付，1为已支付
+		payment : 支付金额
+		create_time: 创建时间
+		pay_time:支付时间
+		extra: 羊的信息
+		
+
+10.订单列表
+	api: http://wx.atunala.com/app/order/mine
+	参数: 无
+	返回值: {"err":"","data":[{"msg":"æ\u0088\u0091æ\u0098¯ç\u0095\u0099è¨\u0080","create_time":null,"count":1,"pid":1,"paystate":0,"qid":0,"pay_time":null,"uid":6,"price":0.01,"extra":"","eth":0.88,"name":"æ\u0088\u0091æ\u0098¯å\u0090\u008Då­\u0097","payment":null,"id":1,"state":1,"realprice":0.01,"addr":"æ\u0088\u0091æ\u0098¯å\u009C°å\u009D\u0080","paytype":0},{"msg":"æ\u0088\u0091æ\u0098¯ç\u0095\u0099è¨\u0080","create_time":null,"count":1,"pid":1,"paystate":0,"qid":0,"pay_time":null,"uid":6,"price":0.01,"extra":"","eth":0.88,"name":"æ\u0088\u0091æ\u0098¯å\u0090\u008Då­\u0097","payment":null,"id":2,"state":1,"realprice":0.01,"addr":"æ\u0088\u0091æ\u0098¯å\u009C°å\u009D\u0080","paytype":0},{"msg":"æ\u0088\u0091æ\u0098¯ç\u0095\u0099è¨\u0080","create_time":null,"count":1,"pid":1,"paystate":0,"qid":1,"pay_time":null,"uid":6,"price":0.01,"extra":"","eth":0.88,"name":"æ\u0088\u0091æ\u0098¯å\u0090\u008Då­\u0097","payment":null,"id":3,"state":1,"realprice":0.0,"addr":"æ\u0088\u0091æ\u0098¯å\u009C°å\u009D\u0080","paytype":0}]}
+		返回订单列表 -
+		id: 订单id
+		uid: 用户id
+		count： 购买数量
+		payType： 支付类型 0 微信支付， 1 ETH支付
+		addr: 送货地址
+		name: 姓名
+		msg: 留言
+		pid: 商品id
+		qid：优惠券id
+		price : 合计价格
+		realprice : 最终价格
+		eth : ETH支付价格
+		state ：订单状态 1为代付款，2为未发货 3为已发货 4为完成，0为取消
+		paystate : 支付状态，0 为未支付，1为已支付
+		payment : 支付金额
+		create_time: 创建时间
+		pay_time:支付时间
+		extra: 羊的信息
+	

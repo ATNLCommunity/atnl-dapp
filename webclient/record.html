@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>兑换商品记录</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/bootstrapValidator.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="record-box">
+    <div class="container">
+        <div class="record-list row" id="recordBox">
+            <!--<div class="record-list-item">-->
+                <!--<div class="col-xs-4">-->
+                    <!--<img src="http://wx.atunala.com/mnfs/upload/_1525578298591_盒加铝朔香辣100g正面.jpg" class="img-responsive">-->
+
+                    <!--<div class="record-date">2099-01-01 23:59:59</div>-->
+                <!--</div>-->
+                <!--<div class="col-xs-8">-->
+                    <!--<div class="product-title">大大打击垃圾了空间去玩i哦金额我i请假哦i家 请问额外</div>-->
+                    <!--<div class="product-num">x&nbsp;<span>1</span></div>-->
+                    <!--<div class="product-track"></div>-->
+                    <!--<div class="product-btn">-->
+                        <!--<button type="button" class="btn btn-reg" onclick="toExchange()">继续兑换</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="clear"></div>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script src="./resource/js/functions.js"></script>
+<script type="text/javascript">
+    $(function () {
+        post('user/info', {}, function (data) {
+            if (data.err != "") {
+                window.location.href = 'login.html';
+            }
+        });
+        post('order/mine', {
+            type: 3
+        }, function (data) {
+
+            if (data.err != "") {
+                alert(data.err);
+            } else {
+
+                var html = '';
+                var htmlall = '';
+                var strBtn = '';
+                var strTrack = '';
+                var order = data.data;
+                for (var i = 0; i < order.length; i++) {
+                    if (order[i].state == 1) {
+                        strTrack = '未支付';
+                        strBtn = '<button type="button" class="btn btn-reg" onclick="closeOrder(' + order[i].id + ')">关闭订单</button>' +
+                                ' &nbsp;<button type="button" class="btn btn-reg" onclick="toPay(' + order[i].id + ')">继续支付</button>';
+                    }
+                    if (order[i].state == 2) {
+                        strTrack = '未发货';
+                        strBtn = ''
+                    }
+                    if (order[i].state == 3) {
+                        strTrack = '物流单号：'+order[i].trackno;
+                        strBtn = ''
+                    }
+                    if (order[i].state == 4) {
+                        strTrack = '已完成';
+                        strBtn = '<button type="button" class="btn btn-reg" onclick="toExchange()">继续兑换</button>';
+                    }
+                    if (order[i].state == 0) {
+                        strTrack = '已取消';
+                        strBtn = ''
+                    }
+                    html = ' <div class="record-list-item"><div class="col-xs-4"><div class="product-logo"><img src="'+order[i].logo+'" class="img-responsive"></div>' +
+                            '<div class="record-date">'+order[i].create_time+'</div></div><div class="col-xs-8"><div class="product-title">'+order[i].pname+'</div>' +
+                            '<div class="product-num">x&nbsp;<span>'+order[i].count+'</span></div><div class="product-track">'+strTrack+'</div><div class="product-btn">'+strBtn+'</div></div><div class="clear"></div></div>';
+                    htmlall += html;
+                }
+                $("#recordBox").html(htmlall);
+            }
+        });
+    })
+
+    function toExchange() {
+        window.location.href = "exchangelist.html"
+    }
+
+    function closeOrder(oid) {
+        post('order/close?oid=' + oid, {}, function (data) {
+            if (data.err != "") {
+                alert(data.err)
+            } else {
+                alert('关闭成功');
+                window.location.href = "record.html"
+            }
+        });
+    }
+
+    function toPay(oid) {
+        if (is_weixn()) {
+            window.location.href = 'http://wx.atunala.com/app/wx/pay?oid=' + oid;
+        } else {
+            post('alipay/pay', {oid: oid}, function (data) {
+                if (data.err != "") {
+                    if (data.err == undefined) {
+                        $('body').append(data);
+                        $("form").attr("target", "_blank");
+                    } else {
+                        alert(data.err);
+                    }
+                }
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

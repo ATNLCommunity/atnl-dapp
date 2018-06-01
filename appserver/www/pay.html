@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <title>微信安全支付</title>
+	<script src="js/utils.js"></script>
+    <script type="text/javascript">
+        //调用微信JS api 支付
+        function jsApiCall()
+        {
+            WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',
+                {
+				   "appId": getParam('appid'), //"wx2421b1c4370ec43b",     //公众号名称，由商户传入     
+				   "timeStamp": getParam('time'), //"1395712654",         //时间戳，自1970年以来的秒数     
+				   "nonceStr": getParam('nonce'), //"e61463f8efa94090b1f366cccfbbb444", //随机串     
+				   "package": "prepay_id=" + getParam('prepay_id'), // "prepay_id=u802345jgfjsdfgsdg888",     
+				   "signType":"MD5",         //微信签名方式：     
+				   "paySign": getParam("sign") // "70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名 
+			   },
+                function(res){
+                    WeixinJSBridge.log(res.err_msg);
+                    //alert(res.err_code+res.err_desc+res.err_msg);
+                }
+            );
+        }
+
+        function callpay()
+        {
+            if (typeof WeixinJSBridge == "undefined"){
+                if( document.addEventListener ){
+                    document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+                }else if (document.attachEvent){
+                    document.attachEvent('WeixinJSBridgeReady', jsApiCall); 
+                    document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+                }
+            }else{
+                jsApiCall();
+            }
+        }
+    </script>
+</head>
+<body onload="callpay()"> 
+</body>
+</html>

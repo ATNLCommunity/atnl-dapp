@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/bootstrapValidator.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="container reg">
+    <div class="row">
+        <img src="./resource/images/logo.png" alt="logo" class="img-responsive" style="width: 100%">
+    </div>
+    <div class="row">
+        <h3 class="form-title text-center">注册</h3>
+
+        <form class="" id="regForm">
+            <div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 col-lg-offset-3 col-lg-6">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="phone" id="phone" placeholder="输入手机号">
+                    <span class="help-block" id="phoneMessage">
+                    </span>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="pwd" id="pwd" placeholder="输入密码">
+                    <span class="help-block" id="pwdMessage">
+                    </span>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="pwd2" placeholder="再次输入密码">
+                    <span class="help-block" id="pwd2Message">
+                    </span>
+                </div>
+                <div class="form-group row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-7 code-i">
+                                <input type="text" class="form-control" name="code" id="code" placeholder="验证码">
+                                <span class="help-block" id="codeMessage">
+                                </span>
+                            </div>
+                            <div class="col-xs-5">
+                                <button type="button" class="btn btn-default btn-block" id="sendcode"
+                                        onclick="send()" style="font-size: 12px">获取语音验证码
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="mail" class="form-control" name="mail" id="mail" placeholder="输入邮箱帐号(选填)">
+                    <span class="help-block" id="mailMessage">
+                    </span>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="token" id="tokenaddr" placeholder="输入imtoken钱包地址(选填)">
+                    <span class="help-block" id="tokenMessage">
+                    </span>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-block btn-reg" id="btnReg" onclick="register()">注册</button>
+                </div>
+                <div class="form-group tologin">
+                    已有帐号<a href="login.html">立即登录</a>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-big">
+                        <input type="checkbox" checked="checked" id="checkbox" value="">
+                        <span>注册帐号即表示您同意并愿意遵守阿图纳拉《用户服务协议》</span>
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script src="./resource/js/md5.min.js"></script>
+
+<script type="text/javascript">
+    //发送验证码倒计时
+    var countdown = 60;
+    function send() {
+        getcode();
+        //var obj = $("#sendcode");
+        //settime(obj);
+
+    }
+
+    function settime(obj) {
+        if (countdown == 0) {
+            obj.attr('disabled', false);
+            obj.html("获取验证码");
+            countdown = 60;
+            return;
+        } else {
+            obj.attr('disabled', true);
+            obj.html(countdown + "S后重新获取");
+            countdown--;
+        }
+        setTimeout(function () {
+            settime(obj)
+        }, 1000)
+    }
+
+    function getcode() {
+        var obj = $("#sendcode");
+        post('user/smscode', {phone: $('#phone').val()}, function (data) {
+            if (data.err != "") {
+                alert(data.err);
+            }
+            else {
+                alert('短信发送成功');
+                settime(obj);
+            }
+        });
+    }
+
+    function register() {
+        var uid = getParam('uid');
+        $("#regForm").data('bootstrapValidator').validate();
+        if ($("#regForm").data('bootstrapValidator').isValid()) {
+            var pwd = md5($('#pwd').val());
+            post('user/register', {
+                phone: $('#phone').val(),
+                pwd: pwd,
+                code: $('#code').val(),
+                mail: $('#mail').val(),
+                tokenaddr: $('#tokenaddr').val(),
+                inviteid: uid
+            }, function (data) {
+                console.log(data);
+                if (data.err != "") {
+                    if(data.err=="账号存在"){
+                        alert("账号存在请登录");
+                        window.location.href = 'login.html';
+                    }else {
+                        alert(data.err);
+                    }
+                }
+                else {
+                    alert('注册成功');
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+    }
+
+
+    $(document).ready(function () {
+        $('form').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                phone: {
+                    container: '#phoneMessage',
+                    validators: {
+                        notEmpty: {
+                            message: '手机号不能为空！'
+                        },
+                        regexp: {
+                            regexp: /^[1][3,4,5,7,8][0-9]{9}$/,
+                            message: '手机号格式有误！'
+                        },
+                    }
+                },
+                pwd: {
+                    container: '#pwdMessage',
+                    validators: {
+                        notEmpty: {
+                            message: '密码不能为空！'
+                        },
+                        identical: {
+                            field: 'pwd2',
+                            message: '两次密码不相同！'
+                        }
+                    }
+                },
+                pwd2: {
+                    container: '#pwd2Message',
+                    validators: {
+                        notEmpty: {
+                            message: '密码不能为空！'
+                        },
+                        identical: {
+                            field: 'pwd',
+                            message: '两次密码不相同！'
+                        }
+                    }
+                },
+                code: {
+                    container: '#codeMessage',
+                    validators: {
+                        notEmpty: {
+                            message: '验证码不能为空！'
+                        }
+                    }
+                },
+                mail: {
+                    container: '#mailMessage',
+                    validators: {
+                        /*
+                         notEmpty: {
+                         message: '邮箱不能为空！'
+                         },
+                         */
+                        emailAddress: {
+                            message: '邮箱格式有误！'
+                        }
+                    }
+                },
+                token: {
+                    container: '#tokenMessage',
+                    validators: {
+                        stringLength: {
+                            min: 42,
+                            max: 42,
+                            message: 'imtoken地址长度应为42个字符！'
+                        }
+                    }
+                },
+            }
+        });
+
+
+        //取消勾选服务协议禁用注册按钮
+        $("#checkbox").change(function () {
+            if ($("#checkbox").prop('checked')) {
+                $("#btnReg").attr("disabled", false);
+            } else {
+                $("#btnReg").attr("disabled", true);
+            }
+        });
+    });
+</script>
+</body>
+</html>

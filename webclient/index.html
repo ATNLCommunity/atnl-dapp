@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>阿图纳拉</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/bootstrapValidator.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body onload="loadinfo()">
+<div class="ad">
+    <img src="./resource/images/ad1.jpg" class="img-responsive">
+    <a href="prodetail.html?pid=30">
+        <img src="./resource/images/ad2.jpg" class="img-responsive">
+    </a>
+</div>
+<div class="nav-bottom">
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <div class="row rowHeight atnl-font-weight-400" align="center">
+                <div class="col-md-4 col-sm-4 col-xs-4 dropup">
+                    <div class="row rowHeight">
+                        <!--<button type="button" class="btn btn-default navbar-btn btn-block">我的</button>-->
+                        <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            我的
+                            <span class="sr-only"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="./invite.html">我的邀请</a></li>
+                            <li><a href="./orderlist.html">我的订单</a></li>
+                            <li><a href="./wallet.html">我的钱包</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-4 dropup">
+                    <div class="row rowHeight">
+                        <!--<button type="button" class="btn btn-default navbar-btn btn-block">我的</button>-->
+                        <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            阿图纳拉
+                            <span class="sr-only"></span>
+                        </button>
+                        <ul class="dropdown-menu" style="left: 9px">
+                            <li><a href="https://mp.weixin.qq.com/s?__biz=MzI3NTQ4ODc2Mg==&mid=100000431&idx=1&sn=ecc9eff0c8ad2ff70896d472a8deb15e&chksm=6b05483a5c72c12cc82fabd3b042c2021a177cb3afd10e8af52f0f3b121dfbb94501b94e85aa&mpshare=1&scene=1&srcid=0507CrjvYfk3QH1r20FL5wcp#rd&scene=4#wechat_redirect">公司介绍</a></li>
+                            <li style="text-align: center"><a href="gzh.html">关注我们</a></li>
+                            <!--<li style="text-align: center"><a href="notice.html">实时公告</a></li>-->
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-4">
+                    <div class="row rowHeight">
+                        <button type="button" class="btn btn-default navbar-btn btn-block" onclick="jumppage('productlist.html')">商品列表</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script src="./resource/js/functions.js"></script>
+<script type="text/javascript">
+    function loadinfo()
+    {
+        post('user/info', {}, function(data) {
+            if (data.err != "") {
+                window.location.href = 'login.html';
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0">
+    <title>提交订单</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/city-picker.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        input{border: 1px solid #a9a9a9}
+        ::-webkit-input-placeholder { /* WebKit browsers */
+            color: #aaa;
+        }
+        :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            color: #aaa;
+        }
+        ::-moz-placeholder { /* Mozilla Firefox 19+ */
+            color: #aaa;
+        }
+        :-ms-input-placeholder { /* Internet Explorer 10+ */
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+<div class="order-addr">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading" id="AddrBtn">收货信息<botton class="btn btn-default btn-xs pull-right" id="btnEditAddr">修改地址</botton></div>
+        <!-- List group -->
+        <ul class="list-group">
+            <li class="list-group-item">
+                <label class="col-xs-3 control-label">收货人：</label><label id="addrName"></label>
+            </li>
+            <li class="list-group-item">
+                <label class="col-xs-3 control-label">联系电话：</label><label id="addrPhone"></label>
+            </li>
+            <li class="list-group-item">
+                <label class="col-xs-3 control-label">收货地址：</label><label id="addrInfo"></label>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="order-product">
+    <div class="list-left">
+        <div class="product-img" id="product-img">
+
+        </div>
+    </div>
+    <div class="list-center" id="productTitle"></div>
+    <div class="list-right">
+        <div class="product-price atnl-color-qd">￥<span id="productPrice"></span></div>
+        <div class="product-num">
+            <span class="glyphicon glyphicon-minus" id="reduce"></span>
+            <span id="productnum">1</span>
+            <span class="glyphicon glyphicon-plus" id="add"></span>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="order-item atnl-bgcolor-1">
+    <div class="order-send-time-t">发货时间</div>
+    <div class="order-send-time-d"><span id="sendDate">07月19日</span>&nbsp;&nbsp;开始发货</div>
+    <div class="clear"></div>
+</div>
+<div class="order-item atnl-bgcolor-1">
+    <div class="order-send-time-t">买家留言</div>
+    <div class="order-send-time-d"><input placeholder="点击给商家留言" id="msg"></div>
+    <div class="clear"></div>
+</div>
+<div class="order-item atnl-bgcolor-1">
+    <div class="order-send-time-t">优惠券</div>
+    <div class="order-send-time-d"  id="btnCoupon" onclick="openQuanBox()">
+        <span class="glyphicon glyphicon-chevron-right"></span></div>
+    <div class="clear"></div>
+</div>
+<div class="order-item-h atnl-bgcolor-1">
+    <div class="order-send-time-t">商品金额</div>
+    <div class="order-send-time-d"><span class="atnl-color-qd">￥<span id="countMoney">0</span></span></div>
+    <div class="order-send-time-t">优惠</div>
+    <div class="order-send-time-d"><span class="atnl-color-qd">-￥<span id="couponMoney">0</span></span></div>
+    <div class="clear"></div>
+</div>
+<div class="bottom-addorder navbar-fixed-bottom">
+    <div class="bottom-addorder-l">合计：<span class="atnl-color-qd">￥<span id="countMoneyCoupon"></span></span></div>
+    <div class="bottom-addorder-r" id="addOrderBtn"><a href="#" class="atnl-color-ms">提交订单</a></div>
+</div>
+<div class="bottom-payway navbar-fixed-bottom" id="payWay" hidden disabled="disabled">
+    <div class="wxpay atnl-color-3" id="wxPay">
+        在线支付
+    </div>
+    <!--<div class="ethpay atnl-color-qd" id="ethPay">-->
+        <!--Eth支付-->
+    <!--</div>-->
+    <div class="cancelpay" id="closePayway">
+        取消支付
+    </div>
+</div>
+<div class="bottom-payway-eth navbar-fixed-bottom" id="payWayEth" hidden>
+    <div style="width: 100%;height: 15px">
+        <i class="glyphicon glyphicon-remove pull-right" id="closeEthPay"></i>
+    </div>
+    <p>我们每天晚上九点后进行ETH对账，会更新订单状态</p>
+    <p>已购88元抵288活动的用户请联系客服返现</p>
+
+    <div class="eth-ts atnl-color-2">你需要支付<span id="eth"></span>个Eth,购买整只羊羔礼盒</div>
+    <div class="eth-ts atnl-color-2">官方收款地址</div>
+    <div class="eth-ts atnl-color-2">0x82Df18eB4C1F8bc8f1C3dd342C7CEffCa4206831</div>
+    <div class="eth-ts-r atnl-color-qd">转账的时候备注本人手机号码</div>
+    <button type="button" class="btn btn-reg" id="btnInvite"
+            data-clipboard-text="0x82Df18eB4C1F8bc8f1C3dd342C7CEffCa4206831">复制地址
+    </button>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     style="transform: translateY(30%)"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    选择优惠券
+                </h4>
+            </div>
+            <div class="modal-body" id="couponList">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="chooseCoupon">
+                    确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!--编辑地址模态框 -->
+<div class="modal fade" id="editAddrModal" tabindex="-1" role="dialog"
+     aria-labelledby="editAddrModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editAddrModalLabel">编辑地址</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editAddrName" class="control-label">联系人:</label>
+                    <input type="text" class="form-control" id="editAddrName">
+                </div>
+                <div class="form-group">
+                    <label for="editAddrPhone" class="control-label">联系电话:</label>
+                    <input type="text" class="form-control" id="editAddrPhone">
+                </div>
+                <div class="form-group">
+                    <label for="editAddrCity" class="control-label">所在地区:</label>
+                    <input id="editAddrCity" class="form-control" type="text" value="" data-toggle="city-picker" style="width: 100%">
+                </div>
+                <div class="form-group">
+                    <label for="editAddrInfo" class="control-label">收货地址:</label>
+                    <input type="text" class="form-control" id="editAddrInfo" placeholder="填写道路、门牌号、小区、楼栋号、单元室等">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnEditAddrSub">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script src="./resource/js/city-picker.data.js"></script>
+<script src="./resource/js/city-picker.js"></script>
+<script src="./resource/js/clipboard.min.js"></script>
+<script src="./resource/js/functions.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        post('user/info', {}, function(data) {
+            if (data.err != "") {
+                window.location.href = 'login.html';
+            }
+        });
+
+        post('user/addr', {}, function(data) {
+            var addr = data.data;
+            if (data.err != "") {
+                alert(data.err);
+            }else{
+                if(typeof(addr.uid)=="undefined"||typeof(addr.phone)=="undefined"||typeof(addr.name)=="undefined"||typeof(addr.addr)=="undefined"){
+                    $("#AddrBtn").html('<span style="color: red">请先添加收货信息</span><botton class="btn btn-danger btn-xs pull-right" onclick="addrModalShow()">添加地址</botton>');
+                    $("#addrName").html("");
+                    $("#addrPhone").html("");
+                    $("#addrInfo").html("");
+                }else{
+                    $("#addrName").html(addr.name);
+                    $("#addrPhone").html(addr.phone);
+                    $("#addrInfo").html(addr.addr);
+                }
+            }
+        });
+
+        var pid = getParam('pid');
+        var couponId = "";//优惠券ID
+        getCouponList();
+        post('product/get?pid=' + pid, {}, function (data) {
+            if (data.err != "") {
+                alert(data.err);
+            } else {
+                console.log(data.data);
+                if(data.data.usequan==0){
+                    $("#btnCoupon").text('该商品不支持优惠券！');
+                    $("#btnCoupon").removeAttr('onclick');
+                }
+                $("#productTitle").html(data.data.name);
+                $("#productPrice").html(data.data.price);
+                var countmoney = data.data.price * $("#productnum").text();
+                var countmoneycoupon = data.data.price * $("#productnum").text() - $("#couponMoney").text();
+                $("#countMoney").html(countmoney);
+                $("#countMoneyCoupon").html(countmoneycoupon);
+                $("#eth").html(data.data.eth);
+                $("#sendDate").html(data.data.send_date);
+                $("#product-img").html('<img src="'+data.data.logo+'" class="img-responsive">');
+            }
+        });
+        getCountMoney();
+
+        $("#chooseCoupon").click(function () {
+            couponId = $("#couponList input:radio:checked").val();
+            if (couponId == undefined || couponId == 0) {
+                $("#btnCoupon").html('<span class="glyphicon glyphicon-chevron-right"></span>');
+                $("#couponMoney").html(0);
+            } else {
+                post('quan/get?qid=' + couponId, {}, function (data) {
+                    if (data.err != "") {
+
+                    } else {
+                        $("#btnCoupon").html('已选择:' + data.data.name);
+                        $("#couponMoney").html(data.data.money);
+                        var countmoney = $("#productPrice").html() * $("#productnum").text();
+                        var countmoneycoupon = $("#productPrice").html() * $("#productnum").text() - $("#couponMoney").text();
+                        $("#countMoney").html(countmoney);
+                        $("#countMoneyCoupon").html(countmoneycoupon);
+                    }
+                });
+            }
+
+//            getCountMoney();
+            $("#myModal").modal('hide');
+        });
+
+        $('#add').click(function () {
+            var i = $('#productnum').text();
+            i++;
+            var p_m = Number($('#u_m').text()) * i;
+            var sum_m = p_m + Number($('#y_m').text());
+            $('#productnum').text(i);
+            getCountMoney();
+        });
+
+        $('#reduce').click(function () {
+            var i = $('#productnum').text();
+            i--;
+            if (i < 1) {
+                $('#productnum').text('1');
+            } else {
+                var p_m = Number($('#u_m').text()) * i;
+                var sum_m = p_m + Number($('#y_m').text());
+                $('#productnum').text(i);
+                getCountMoney();
+            }
+        });
+
+        $("#addOrderBtn").click(function () {
+            $("#payWay").show();
+        });
+        $("#closePayway").click(function () {
+            $("#payWay").hide();
+        })
+        $("#ethPay").click(function () {
+
+            var count = $("#productnum").text();
+            var addr = $("#addrInfo").text();
+            var name = $("#addrName").text();
+            var phone = $("#addrPhone").text();
+            var msg = $("#msg").val();
+            post_af('order/create?count='+count+'&payType=2&addr='+addr+'&name='+name+'&msg='+msg+'&pid='+pid + '&contacts=' + phone +'&qid='+couponId, {}, function (data) {
+                if (data.err != "") {
+                    alert(data.err);
+                } else {
+                    $("#payWayEth").show();
+                    $("#payWay").hide();
+                }
+            });
+        })
+
+        $("#wxPay").click(function () {
+            $("#payWay").hide();
+            var count = $("#productnum").text();
+            var addr = $("#addrInfo").text();
+            var name = $("#addrName").text();
+            var phone = $("#addrPhone").text();
+            var msg = $("#msg").val();
+            post('order/create?count='+count+'&payType=1&addr='+addr+'&name='+name+'&msg='+msg+'&pid='+pid + '&contacts=' + phone +'&qid='+couponId, {}, function (data) {
+                if (data.err != "") {
+                    alert(data.err);
+                } else {
+                    var oid= data.data.id;
+                    if(data.data.state==2){
+                        window.location.href='orderlist.html';
+                    }else{
+                        if (is_weixn()) {
+                            window.location.href='http://wx.atunala.com/app/wx/pay?oid='+oid;
+
+                        } else {
+                            post('alipay/pay', {oid:oid}, function (data) {
+                                if (data.err != "") {
+                                    if(data.err==undefined){
+                                        $('body').append(data);
+                                        $("form").attr("target", "_blank");
+                                    }else {
+                                        alert(data.err);
+                                    }
+                                }
+                            });
+                        }
+                    }
+//                    if(is_weixn()){
+//                        window.location.href='http://wx.atunala.com/app/wx/pay?oid='+data.data.id;
+//                    }else{
+//                        window.location.href='http://wx.atunala.com/app/alipay/pay?oid='+data.data.id;
+//                    }
+                }
+            });
+        })
+
+        $("#btnEditAddr").click(function(){
+            $("#editAddrModal").modal('show');
+        })
+//        $("#btnCoupon").click(function(){
+//            //alert('将弹出优惠券框');
+//            $("#myModal").modal('show');
+//        })
+
+        $("#btnEditAddrSub").click(function(){
+            var name = $("#editAddrName").val();
+            var phone = $("#editAddrPhone").val();
+            var addr = $("#editAddrCity").val() + $("#editAddrInfo").val();
+            if(name==""||phone==""||addr==""){
+                alert("请填写完整！")
+            }else{
+                post('user/setaddr', {
+                    addr:addr,
+                    phone:phone,
+                    name:name
+                }, function (data) {
+                    if (data.err != "") {
+                        alert(data.err);
+                    } else {
+                        location.reload();
+                    }
+                });
+            }
+        })
+
+        $("#closeEthPay").click(function(){
+            $("#payWayEth").hide();
+        })
+    });
+
+    var clipboard = new ClipboardJS('#btnInvite');
+
+    clipboard.on('success', function (e) {
+        alert("地址已复制到剪切板，粘贴到钱包支付！");
+        e.clearSelection();
+    });
+
+    clipboard.on('error', function (e) {
+    });
+
+    //获取优惠券列表
+    function getCouponList() {
+        post('quan/mine', {}, function (data) {
+            if (data.err != "") {
+
+            } else {
+                var html = ''
+                if (data.data.length <= 0) {
+                    html = '没有优惠券！';
+                } else {
+                    for (var i = 0; i < data.data.length; i++) {
+                        html += html;
+                        html = '<div class="radio"><label><input type="radio" name="optionsRadios" value="' + data.data[i].id + '">' + data.data[i].name + '</label></div>';
+                    }
+                    html += '<div class="radio"><label><input type="radio" name="optionsRadios" value="0">不使用优惠券</label></div>';
+                }
+                $("#couponList").html(html);
+            }
+        });
+    }
+
+    //计算总价
+    function getCountMoney() {
+        var productMoney = $("#productPrice").text()//单价
+        var countmoney = "";//优惠前总计
+        var countmoneycoupon = "";//优惠后总计
+        var countmoney = productMoney * $("#productnum").text();
+        var countmoneycoupon = productMoney * $("#productnum").text() - $("#couponMoney").text();
+        $("#countMoney").html(countmoney);
+        $("#countMoneyCoupon").html(countmoneycoupon);
+    }
+
+    function addrModalShow(){
+        $("#editAddrModal").modal('show');
+    }
+
+    function openQuanBox(){
+        $("#myModal").modal('show');
+    }
+</script>
+</body>
+</html>

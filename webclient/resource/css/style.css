@@ -1,0 +1,667 @@
+body {
+    background-color: #e5e5e4;
+}
+
+.clear {
+    clear: both;
+}
+
+.atnl-color-1 {
+    color: #848484;
+}
+
+.atnl-color-2 {
+    color: #595757;
+}
+
+.atnl-color-3 {
+    color: #1f913b;
+}
+
+.atnl-bgcolor-1 {
+    background-color: #e8e8e8;
+}
+
+.atnl-bgcolor-red {
+    background-color: red;
+    color: white;
+}
+
+.atnl-bgcolor-orange {
+    background-color: orange;
+    color: white;
+}
+
+.atnl-color-ts {
+    color: #e7e7e7;
+}
+
+.atnl-color-ms {
+    color: #3e3a39;
+}
+
+.atnl-color-bl {
+    color: black;
+}
+
+.atnl-color-qd {
+    color: #d64f49;
+}
+
+.reg input, button {
+    /*height: 40px;*/
+    border: 1px solid #dadada;
+    border-radius: 2px;
+}
+
+.reg .checkbox-big input {
+    height: auto;
+    zoom: 140%;
+    vertical-align: middle;
+}
+
+.reg .forget a {
+    color: #979797;
+}
+
+.reg .toreg a {
+    color: red;
+}
+
+.reg .tologin {
+    color: #979797;
+    text-align: center;
+}
+
+.reg .tologin a {
+    color: red;
+    padding-left: 2%;
+}
+
+.btn-reg {
+    background-color: #FFE100;
+    border: 1px solid #3A3508;
+}
+
+.code-i i {
+    margin-right: 15px;
+}
+
+.nav-bottom .container {
+    height: 49px;
+}
+
+.nav-bottom .col-md-4, .nav-bottom .col-sm-4, .nav-bottom .col-xs-4 {
+    height: 100%;
+    border: 1px solid #e7e7e7
+}
+
+.rowHeight {
+    height: 100%;
+}
+
+.nav-bottom button {
+    margin: 0;
+    height: 100%;
+    line-height: 100%;
+    border: 0px;
+    background: url('../images/yeqian_button.png') no-repeat;
+    /*background-attachment: fixed;*/
+    background-position: -40%;
+    background-size: 70% 100%;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.nav-bottom .btn-default {
+    background-color: #ffffff;
+}
+
+.nav-bottom .btn-default:hover {
+    background-color: #ffffff;
+}
+
+.nav-bottom .dropdown-menu {
+    min-width: 120px;
+    text-align: center;
+}
+
+.nav-bottom .dropdown-menu li {
+    width: 55%;
+    margin-left: 20%;
+    margin-top: 5px;
+}
+
+.nav-bottom .dropdown-menu a {
+    font-size: 16px;
+    padding-left: 0;
+    padding-bottom: 3px;
+    font-weight: 600;
+    border-bottom: 1px solid #b4b4b4
+}
+
+.invite .col-xs-12 {
+    margin-bottom: 15px;
+}
+
+.invite .form-control {
+    height: 50px;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+.invite .btn-invite {
+    height: 50px;
+    border-radius: 20px;
+    font-size: 16px;
+    background-image: url("../images/btn_bgimg.jpg");
+    /*background-repeat: no-repeat;*/
+    background-position: -100% center;
+    background-size: 80%;
+    color: yellow;
+}
+.invite-top{
+    background-image: url("../images/btn_bgimg.jpg");
+    background-position: -100% center;
+    background-size: 80%;
+}
+.top-invite a {
+    color: #b4b4b4;
+}
+
+.top-invite .list-group {
+    margin-bottom: 15px;
+}
+
+.atnl-hr {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    border-top: 1px solid #b4b4b4;
+}
+
+.top-invite .list-group-item {
+    border-radius: 0;
+    background-color: #e5e5e5;
+}
+
+.invite {
+    padding-top: 10px;
+}
+
+.invite .code-img {
+    width: 100%;
+    padding: 0 25%;
+}
+
+.invite .code-text {
+    color: #a6a6a6;
+    text-align: center;
+}
+
+.invite .table, .invite th {
+    text-align: center;
+    font-weight: 600;
+
+}
+
+.invite th, .invite td {
+    font-size: 20px;
+}
+
+.invite td {
+    color: red;
+}
+
+.invite-btn {
+    width: 70%;
+    margin: 50px 15% 10px;
+}
+
+.invite-btn .btn-reg {
+    height: 45px;
+}
+
+.top-wallet .list-group-item {
+    font-size: 16px;
+    border-radius: 0;
+    background-color: #e5e5e5;
+    padding: 0px 15px;
+    height: 50px;
+    line-height: 50px;
+}
+
+.top-wallet .btn-reg {
+    padding: 3px 10px;
+    margin-top: 10px;
+}
+
+.top-wallet .list-group-item .glyphicon {
+    padding-top: 15px;
+}
+
+.wallet-list-text {
+}
+
+.wallet-list-text-atnl {
+    position: fixed;
+    left: 30%;
+}
+
+.wallet-list-text-token {
+    position: fixed;
+    left: 30%;
+    width: 60%;
+    line-height: 25px;
+    word-break: break-all;
+    font-size: 13px;
+}
+
+
+.record-box .container{
+    padding-right: 0px;
+    padding-left: 0px;
+}
+.record-box .row{
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.record-list-item {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #a6a6a6;
+    overflow: hidden;
+    margin-bottom: 5px;
+    background-color: #ffffff;
+}
+
+.record-list .record-date {
+    font-size: 9px;
+    margin-bottom: 5px;
+}
+.record-list .product-logo {
+    min-height: 100px;
+}
+
+.record-list .product-title {
+    margin-top: 5%;
+    font-size: 15px;
+}
+.record-list .product-num {
+    font-size: 15px;
+    font-weight: 600;
+}
+.record-list .product-track {
+    font-size: 15px;
+    height: 24px;
+}
+.record-list .product-btn {
+    text-align: right;
+}
+
+.record-list .list-right .product-price {
+    margin-top: 2%;
+    font-size: 19px;
+}
+
+.record-list .list-right .product-exc {
+    float: right;
+    padding-right: 5%;
+}
+
+.ad {
+    margin-bottom: 50px;
+}
+
+.ad img {
+    padding: 10px 3%;
+}
+
+.instru .er {
+    width: 30%;
+    margin-left: 35%;
+}
+
+.instru .pricelist {
+    width: 100%;
+}
+
+.top-detail {
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.detail-info {
+    margin: 0px 5%;
+    padding-top: 10px;
+}
+
+.detail-info-title {
+    font-size: 15px;
+    padding-bottom: 5px;
+}
+
+.detail-info-price {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.detail-info-yf {
+    font-size: 13px;
+    margin-left: 7%;
+}
+
+.detail-info-surplus {
+    float: right;
+    font-size: 15px;
+}
+
+.bottom-detail, .bottom-addorder {
+    width: 100%;
+    height: 45px;
+    background-color: #f3d422;
+}
+
+.detail-kf {
+    width: 20%;
+    height: 100%;
+    background-color: #ffffff;
+    text-align: center;
+    padding-top: 5px;
+    float: left;
+}
+
+.detail-kf img {
+    width: 33%;
+}
+
+.detail-sendtime {
+    width: 50%;
+    height: 45px;
+    line-height: 45px;
+    float: left;
+    font-size: 15px;
+}
+
+.detail-buy, .bottom-addorder .bottom-addorder-r {
+    width: 30%;
+    height: 45px;
+    float: right;
+    text-align: center;
+    line-height: 45px;
+}
+
+.detail-buy a, .bottom-addorder .bottom-addorder-r a {
+    font-size: 18px;
+    font-weight: 800;
+    color: #3e3a39;
+    text-decoration: none;
+}
+
+.bottom-buy a:hover, a:link, a:visited {
+    color: #3e3a39;
+    text-decoration: none;
+}
+
+.order-addr .list-group-item {
+    background-color: #e5e5e5;
+}
+
+.order-addr .list-group {
+    margin-bottom: 0;
+}
+
+.order-addr .item-name {
+    width: 18%;
+    float: left;
+    height: 26px;
+    line-height: 26px;
+}
+
+.order-addr .item-input {
+    width: 82%;
+    float: left;
+}
+
+.order-addr .item-input input {
+    width: 100%;
+}
+
+.order-addr .form-control {
+    height: 26px;
+}
+
+.order-addr .list-group-item label {
+    margin-bottom: 0;
+}
+
+.order-addr .list-group-item .col-xs-3 {
+    padding: 0;
+}
+
+#editAddrModal .form-control {
+    border: 1px solid #a9a9a9;
+    border-radius: 0;
+    padding: 0px;
+}
+
+#editProModal .list-group-item label {
+    margin-bottom: 0;
+}
+
+#editProModal .list-group-item .col-xs-4 {
+    width: 27%;
+    padding: 0;
+}
+
+#editProModal .form-control {
+    border: 1px solid #a9a9a9;
+    border-radius: 0;
+    padding: 0px;
+}
+
+.order-product {
+    padding: 10px;
+}
+
+.order-product .list-left {
+    width: 20%;
+    float: left;
+}
+
+.order-product .list-center {
+    padding-left: 10px;
+    width: 55%;
+    float: left;
+}
+
+.order-product .list-right {
+    width: 25%;
+    float: left;
+    text-align: right;
+}
+
+.order-product .list-right .product-price {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.order-product .list-right .product-num {
+    margin: 5px;
+    font-size: 17px;
+}
+
+.order-item {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 5px;
+    padding: 0px 5%;
+}
+
+.order-item .order-send-time-t {
+    width: 20%;
+    float: left;
+}
+
+.order-item .order-send-time-d {
+    width: 80%;
+    float: right;
+    text-align: right;
+}
+
+.order-item .order-send-time-d input {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    margin: 5px 0;
+}
+
+.order-item-h {
+    width: 100%;
+    height: 70px;
+    line-height: 60px;
+    margin-bottom: 5px;
+    padding: 0px 5%;
+}
+
+.order-item-h .order-send-time-t {
+    width: 20%;
+    height: 25px;
+    line-height: 25px;
+    float: left;
+}
+
+.order-item-h .order-send-time-d {
+    width: 80%;
+    height: 25px;
+    line-height: 25px;
+    float: right;
+    text-align: right;
+}
+
+.bottom-addorder .bottom-addorder-l {
+    width: 70%;
+    height: 45px;
+    line-height: 45px;
+    text-align: right;
+    background-color: #ffffff;
+    float: left;
+    font-size: 18px;
+}
+
+.bottom-payway, .bottom-payway-eth {
+    background-color: #ffffe9;
+    width: 100%;
+}
+
+.bottom-payway .wxpay, .bottom-payway .ethpay, .bottom-payway .cancelpay {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e5e4;
+}
+
+.bottom-payway .wxpay {
+    color: green;
+}
+
+.bottom-payway-eth {
+    padding: 10px;
+}
+
+.bottom-payway-eth .btn {
+    float: right;
+}
+
+.bottom-payway-eth .eth-ts2 {
+    width: 100%;
+}
+
+.order-info-addr .item-name {
+    width: 20%;
+    float: left;
+    height: 40px;
+    line-height: 40px;
+}
+
+.order-info-addr .item-name img {
+    width: 60%;
+    float: left;
+}
+
+.order-info-addr .addr-icon img {
+    width: 30%;
+    margin-left: 15%;
+    text-align: center;
+    float: left;
+}
+
+.order-info-addr .item-input {
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+}
+
+.order-list-item {
+    height: auto;
+    padding: 5px 10px;
+    border-bottom: 1px solid #b4b4b4;
+}
+
+.order-list-top {
+    margin: 5px 0px;
+}
+
+.order-list-top-rigth {
+    float: right;
+    color: red;
+}
+
+.order-list-content-left {
+    width: 20%;
+    float: left;
+}
+
+.order-list-content-center {
+    padding-left: 5px;
+    width: 45%;
+    float: left;
+}
+
+.order-list-content-right {
+    width: 35%;
+    float: left;
+    text-align: right;
+}
+
+.addr-img {
+    width: 20%;
+    padding-left: 4%;
+    float: left
+}
+
+.addr-info {
+    width: 80%;
+    float: left
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

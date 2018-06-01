@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>兑换列表</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/bootstrapValidator.css" rel="stylesheet">
+    <link href="./resource/css/city-picker.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="order-list" id="orderList">
+    <div class="order-list-item">
+        <div class="order-list-content">
+            <div class="order-list-content-left">
+                <img src="resource/images/product_1.png" class="img-responsive">
+            </div>
+            <div class="order-list-content-center">
+                <p>XXXXXXX</p>
+
+                <p>:￥<span>9999</span>+<span>9000</span>ATNL</p>
+            </div>
+            <div class="order-list-content-right">
+                <button type="button" class="btn btn-reg" onclick="exchage()">兑换</button>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+
+<!--兑换商品模态框 -->
+<div class="modal fade" id="editProModal" tabindex="-1" role="dialog"
+     aria-labelledby="editProModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editProModalLabel">兑换<span id="proName"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading" id="AddrBtn">收货信息
+                        <botton class="btn btn-default btn-xs pull-right" id="" onclick="editAddr()">修改地址</botton>
+                    </div>
+                    <!-- List group -->
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <label class="col-xs-4 control-label">收货人：</label><label id="addrName"></label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="col-xs-4 control-label">联系电话：</label><label id="addrPhone"></label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="col-xs-4 control-label">收货地址：</label><label id="addrInfo"></label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-group" hidden>
+                    <label for="proId" class="control-label">商品ID:</label>
+                    <input type="text" class="form-control" readonly id="proId">
+                </div>
+                <div class="form-group">
+                    <label for="count" class="control-label">数量:</label>
+                    <input type="text" class="form-control" id="count">
+                </div>
+                <div class="form-group">
+                    <label for="msg" class="control-label">留言:</label>
+                    <input type="text" class="form-control" id="msg">
+                    <label class="control-label">口味有原味、香辣、五香、混合可选，如有需要请备注，默认随机发！</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnExchageSub">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--编辑地址模态框 -->
+<div class="modal fade" id="editAddrModal" tabindex="-1" role="dialog"
+     aria-labelledby="editAddrModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editAddrModalLabel">编辑地址</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editAddrName" class="control-label">联系人:</label>
+                    <input type="text" class="form-control" id="editAddrName">
+                </div>
+                <div class="form-group">
+                    <label for="editAddrPhone" class="control-label">联系电话:</label>
+                    <input type="text" class="form-control" id="editAddrPhone">
+                </div>
+                <div class="form-group">
+                    <label for="editAddrCity" class="control-label">所在地区:</label>
+                    <input id="editAddrCity" class="form-control" type="text" value="" data-toggle="city-picker"
+                           style="width: 100%">
+                </div>
+                <div class="form-group">
+                    <label for="editAddrInfo" class="control-label">收货地址:</label>
+                    <input type="text" class="form-control" id="editAddrInfo" placeholder="填写道路、门牌号、小区、楼栋号、单元室等">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnEditAddrSub">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script src="./resource/js/clipboard.min.js"></script>
+<script src="./resource/js/city-picker.data.js"></script>
+<script src="./resource/js/city-picker.js"></script>
+<script src="./resource/js/functions.js"></script>
+<script type="text/javascript">
+    $(function () {
+//        post('user/info', {}, function (data) {
+//            if (data.err != "") {
+//                window.location.href = 'login.html';
+//            }
+//        });
+//
+//        post('user/addr', {}, function (data) {
+//            var addr = data.data;
+//            if (data.err != "") {
+//                alert(data.err);
+//
+//            } else {
+//                if (typeof(addr.uid) == "undefined" || typeof(addr.phone) == "undefined" || typeof(addr.name) == "undefined" || typeof(addr.addr) == "undefined") {
+//                    $("#AddrBtn").html('<span style="color: red">请先添加收货信息</span><botton class="btn btn-danger btn-xs pull-right"  onclick="addrModalShow()">添加地址</botton>');
+//                    $("#addrName").html("");
+//                    $("#addrPhone").html("");
+//                    $("#addrInfo").html("");
+//                } else {
+//                    $("#addrName").html(addr.name);
+//                    $("#addrPhone").html(addr.phone);
+//                    $("#addrInfo").html(addr.addr);
+//                }
+//            }
+//        });
+
+        post('product/list', {type: 1}, function (data) {
+            if (data.err != "") {
+
+            } else {
+                var html = '';
+                var htmlall = ''
+                var productlist = data.data;
+                if (data.data.length <= 0) {
+                    htmlall = '没有订单！';
+                } else {
+                    for (var i = 0; i < productlist.length; i++) {
+                        html = '<div class="order-list-item"> ' +
+                                '<div class="order-list-content"> ' +
+                                '<div class="order-list-content-left"> ' +
+                                '<img src="' + productlist[i].logo + '" class="img-responsive"> ' +
+                                '</div> ' +
+                                '<div class="order-list-content-center"> ' +
+                                '<p>' + productlist[i].name + '</p> ' +
+                                '<p>￥<span>' + productlist[i].price + '</span>+<span>' + productlist[i].atnl + '</span>ATNL</p> ' +
+                                '</div> ' +
+                                '<div class="order-list-content-right"> ' +
+                                '<button type="button" class="btn btn-reg" onclick="exchage(' + productlist[i].id + ',\'' + productlist[i].name + '\')">兑换</button> ' +
+                                '</div></div><div class="clear"></div></div>';
+                        htmlall = html + htmlall;
+                    }
+                }
+                $("#orderList").html(htmlall);
+            }
+        });
+
+        $("#btnExchageSub").click(function () {
+            var pid = ($("#proId").val());
+            var count = $("#count").val();
+            var addr = $("#addrInfo").text();
+            var name = $("#addrName").text();
+            var phone = $("#addrPhone").text();
+            var msg = $("#msg").val();
+            post('order/exchange', {
+                paytype: 3,
+                count: count,
+                addr: addr,
+                name: name,
+                contacts: phone,
+                msg: msg,
+                pid: pid,
+            }, function (data) {
+                if (data.err != "") {
+                    alert(data.err);
+                } else {
+                    var oid = data.data.id;
+                    if (data.data.state == 2) {
+                        window.location.href = 'record.html';
+                    } else {
+                        if (is_weixn()) {
+                            window.location.href = 'http://wx.atunala.com/app/wx/pay?oid=' + oid;
+                        } else {
+                            post('alipay/pay', {oid: oid}, function (data) {
+                                if (data.err != "") {
+                                    if (data.err == undefined) {
+                                        $('body').append(data);
+                                        $("form").attr("target", "_blank");
+                                    } else {
+                                        alert(data.err);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        });
+
+        $("#btnEditAddr").click(function () {
+            $("#editProModal").modal('hide');
+            $("#editAddrModal").modal('show');
+        });
+
+        $("#btnEditAddrSub").click(function () {
+            var name = $("#editAddrName").val();
+            var phone = $("#editAddrPhone").val();
+            var addr = $("#editAddrCity").val() + $("#editAddrInfo").val();
+            var proname = $("#proName").text();
+            var pid = $("#proId").val();
+            if (name == "" || phone == "" || addr == "") {
+                alert("请填写完整！")
+            } else {
+                post_af('user/setaddr', {
+                    addr: addr,
+                    phone: phone,
+                    name: name
+                }, function (data) {
+                    if (data.err != "") {
+                        alert(data.err);
+                    } else {
+                        $("#editAddrModal").modal('hide');
+                        exchage(pid, proname);
+                        post_af('user/addr', {}, function (data) {
+                            var addr = data.data;
+                            if (data.err != "") {
+                                alert(data.err);
+                            } else {
+                                $("#addrName").html(addr.name);
+                                $("#addrPhone").html(addr.phone);
+                                $("#addrInfo").html(addr.addr);
+                            }
+                        });
+                    }
+                });
+            }
+            $("body").addClass('modal-open');
+        });
+
+    });
+
+    function exchage(pid, name) {
+        post('user/addr', {}, function (data) {
+            var addr = data.data;
+            if (data.err != "") {
+                window.location.href = 'login.html';
+
+            } else {
+                if (typeof(addr.uid) == "undefined" || typeof(addr.phone) == "undefined" || typeof(addr.name) == "undefined" || typeof(addr.addr) == "undefined") {
+                    $("#AddrBtn").html('<span style="color: red">请先添加收货信息</span><botton class="btn btn-danger btn-xs pull-right"  onclick="addrModalShow()">添加地址</botton>');
+                    $("#addrName").html("");
+                    $("#addrPhone").html("");
+                    $("#addrInfo").html("");
+                } else {
+                    $("#addrName").html(addr.name);
+                    $("#addrPhone").html(addr.phone);
+                    $("#addrInfo").html(addr.addr);
+                }
+            }
+        });
+        $("#proName").text(name);
+        $("#proId").val(pid);
+        $("#editProModal").modal('show');
+        $("#editProModal").on('shown.bs.modal', function () {
+            $("body").addClass('modal-open');
+        })
+    }
+
+    function addrModalShow() {
+        $("#editAddrModal").modal('show');
+    }
+
+    function editAddr() {
+        $("#editProModal").modal('hide');
+        $("#editAddrModal").modal('show');
+    }
+</script>
+</body>
+</html>

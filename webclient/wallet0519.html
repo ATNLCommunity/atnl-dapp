@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的钱包</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/bootstrapValidator.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="top-wallet">
+    <div class="list-group">
+        <a class="list-group-item">
+            <div class="pull-right"></div>
+            <span class="wallet-list-text">我的ATNL</span><span class="wallet-list-text-atnl" id="allatnl"></span>
+        </a>
+        <a class="list-group-item">
+            <div class="pull-right">
+                <button type="button" class="btn btn-block btn-reg" id="needCash">提现</button>
+            </div>
+            <span class="wallet-list-text">已解锁</span><span class="wallet-list-text-atnl" id="atnl"></span>
+        </a>
+        <a class="list-group-item">
+            <span class="wallet-list-text">未解锁</span><span class="wallet-list-text-atnl" id="lockatnl"></span><span
+                style="float: right;font-size: 13px">解锁绿色通道，请联系客服！</span>
+        </a>
+
+        <a class="list-group-item">
+            <div class="clear"></div>
+            <span class="wallet-list-text">Imtoken地址</span>
+            <span class="wallet-list-text-token" style="width: 45%" id="tokenaddr"></span>
+            <span style="float: right"><button type="button" class="btn btn-block btn-reg" data-toggle="modal"
+                                               data-target="#editTokenModal">修改
+            </button></span>
+        </a>
+        <a href="./instructions.html" class="list-group-item">
+            <span class="glyphicon glyphicon-menu-right pull-right"></span>
+            使用说明
+        </a>
+        <a href="./exchangelist.html" class="list-group-item">
+            <span class="glyphicon glyphicon-menu-right pull-right"></span>
+            兑换商品列表
+        </a>
+        <a href="./record.html" class="list-group-item">
+            <span class="glyphicon glyphicon-menu-right pull-right"></span>
+            兑换商品记录
+        </a>
+    </div>
+</div>
+<!--修改钱包地址模态框 -->
+<div class="modal fade" id="editTokenModal" tabindex="-1" role="dialog" aria-labelledby="editTokenModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editTokenModalLabel">修改钱包地址</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editTokenAddr" class="control-label">新地址:</label>
+                    <input type="text" class="form-control" id="editTokenAddr">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnEditSub">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--提现模态框 -->
+<div class="modal fade" id="needCashModal" tabindex="-1" role="dialog" aria-labelledby="needCashModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="needCashModalLabel">提现</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="needCashNum" class="control-label">提现数量：</label>
+                    <input type="text" class="form-control" id="needCashNum">
+                </div>
+                <div class="form-group">
+                    <label for="needCashNum" class="control-label" style="float: left;width: 100%">验证码：</label>
+                    <input type="text" class="form-control" id="needCashCode" style="width: 50%;float: left">
+                    <button type="button" class="btn btn-primary" id="sendcode" onclick="getcode()" style="font-size: 14px;margin-left: 20px">获取语音验证码
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnNeedCashSub">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script type="text/javascript">
+    $(function () {
+        post('user/info', {}, function (data) {
+            if (data.err != "") {
+                window.location.href = 'login.html';
+            } else {
+                $("#tokenaddr").html(data.data.tokenaddr)
+                $("#atnl").html(data.data.atnl)
+                $("#lockatnl").html(data.data.lockatnl)
+            }
+        });
+
+        //提交地址修改
+        $("#btnEditSub").click(function () {
+            var tokenaddr = $("#editTokenAddr").val();
+            post('user/tokenaddr', {
+                tokenaddr: tokenaddr,
+            }, function (data) {
+                if (data.err != "") {
+                    alert(data.err);
+                } else {
+                    window.location.href = "./wallet.html";
+                }
+            });
+        })
+
+        //提现
+        $("#needCash").click(function () {
+            $('#needCashModal').modal('show');
+        })
+
+        //提交提现申请
+        $("#btnNeedCashSub").click(function () {
+            var cash = $("#needCashNum").val();
+            var code = $("#needCashCode").val();
+            if(cash==""){
+                alert("请输入解锁数量！")
+            }else if(code==""){
+                alert("请输入验证码！")
+            }else {
+                post('cash/needcash', {
+                    cash: cash,
+                    code: code,
+                }, function (data) {
+                    if (data.err != "") {
+                        alert(data.err);
+                    } else {
+                        alert("你的提现申请已经发出，我们的客服会在2018年6月1日起统一开始受理")
+                        window.location.href = "./wallet.html";
+                    }
+                });
+            }
+        })
+    })
+
+    //发送验证码倒计时
+    var countdown = 60;
+    function settime(obj) {
+        if (countdown == 0) {
+            obj.attr('disabled', false);
+            obj.html("获取验证码");
+            countdown = 60;
+            return;
+        } else {
+            obj.attr('disabled', true);
+            obj.html(countdown + "S后重新获取");
+            countdown--;
+        }
+        setTimeout(function () {
+            settime(obj)
+        }, 1000)
+    }
+
+    function getcode() {
+        var obj = $("#sendcode");
+        post('cash/smscode', {}, function (data) {
+            if (data.err != "") {
+                alert(data.err);
+            }
+            else {
+                alert('短信发送成功');
+                settime(obj);
+            }
+        });
+    }
+</script>
+</body>
+</html>

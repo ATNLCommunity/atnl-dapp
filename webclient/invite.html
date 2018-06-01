@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的邀请</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/bootstrapValidator.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body onload="loadinfo()" style="background-color: white">
+<div class="container invite">
+    <div class="row">
+        <div class="col-xs-12 invite-top" style="height: 150px;color: yellow;position: relative">
+            <!--<span style="font-weight: 600;font-size: 30px;position:absolute;bottom: 30px;left: 15%">ATNL</span>-->
+            <span style="font-weight: 600;font-size: 50px;position:absolute;bottom: 70px;left: 30%"><span style="font-size: 20px">已解锁</span><span id="atnl"></span></span>
+            <span style="font-weight: 600;font-size: 50px;position:absolute;bottom: 10px;left: 30%"><span style="font-size: 20px">未解锁</span><span id="lockAtnl"></span></span>
+        </div>
+        <div class="col-xs-12"><span style="font-weight: 600;font-size: 16px">邀请好友获得更多ATNL</span>
+            <hr class="atnl-hr">
+        </div>
+        <div class="col-xs-12"><input type="text" class="form-control" id="regLink" value="" readonly></div>
+        <div class="col-xs-12">
+            <button type="button" class="btn btn-block btn-invite" id="btnInvite" data-clipboard-text="" onclick="">
+                点击这里邀请好友注册
+            </button>
+        </div>
+        <!--<div class="col-xs-12">-->
+        <!--<div class="code-img" id="qrcode">-->
+        <!--<img src="./resource/images/code-img.png" alt="..." class="img-responsive">-->
+        <!--</div>-->
+        <!--<div class="code-text">-->
+        <!--<span id="uid">9999</span>-->
+        <!--<p>我的专属邀请码</p>-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="col-xs-12">
+            <table class="table">
+                <caption>有效邀请人数统计</caption>
+                <thead style="text-align: center">
+                <tr>
+                    <th width="15%">#</th>
+                    <th >M1</th>
+                    <th >M2</th>
+                    <th >M3</th>
+                    <th >M4</th>
+                    <th >M5</th>
+                    <th >M6</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr id="inviteLevel">
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="top-invite">
+    <div class="list-group">
+        <a href="inviterule.html" class="list-group-item">
+            <span class="glyphicon glyphicon-menu-right pull-right"></span>
+            邀请规则
+        </a>
+    </div>
+</div>
+
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script src="./resource/js/clipboard.min.js"></script>
+<script src="./resource/js/jquery.qrcode.min.js"></script>
+
+<script type="text/javascript">
+
+    var uid = 0;
+    var inviteText = "";
+    function loadinfo() {
+        post('user/info', {}, function (data) {
+            if (data.err != "") {
+                alert(data.err);
+                window.location.href = 'login.html';
+            }
+            else {
+                console.log(data.data);
+                var userInfo = data.data;
+                uid = data.data.id;
+                inviteText = "阿图纳拉为你放牧真正牧北寒羊，联合海内外区块链顶级合作伙伴落地食品安全，防伪溯源项目。限时开放注册名额!ATNL发行量仅10亿!" +
+                        "注册送150ATNL，六级网络邀请送75--37--18--9--4--2ATNL，6个月内上交易所。ATNL可直接在公众号以一个一元兑换牧场产品!" +
+                        "网址：http://wx.atunala.com/reg/reg.html?uid="+uid+"。名额有限，手慢则无！";
+                $("#btnInvite").attr("data-clipboard-text",inviteText);
+                $("#regLink").val("http://wx.atunala.com/reg/reg.html?uid="+uid)
+                $("#inviteLevel").html(' <th scope="row">人数</th><td>'+userInfo.m1+'</td><td>'+userInfo.m2+'</td><td>'+userInfo.m3+'</td><td>'+userInfo.m4+'</td><td>'+userInfo.m5+'</td><td>'+userInfo.m6+'</td>')
+                $("#countImviteAtnl").html(userInfo.m1*75+userInfo.m2*37+userInfo.m3*18+userInfo.m4*9+userInfo.m5*4+userInfo.m6*2);
+                $("#lockAtnl").html(userInfo.lockatnl);
+                $("#atnl").html(userInfo.atnl);
+            }
+        });
+
+    }
+
+    var clipboard = new ClipboardJS('#btnInvite');
+
+    clipboard.on('success', function (e) {
+        alert("邀请内容已复制到剪切板，粘贴发送给朋友即可邀请好友注册！");
+        e.clearSelection();
+    });
+
+    clipboard.on('error', function (e) {
+    });
+</script>
+</body>
+</html>

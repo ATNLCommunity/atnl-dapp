@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的订单</title>
+
+    <!-- Bootstrap -->
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/style.css" rel="stylesheet">
+    <link href="./resource/css/bootstrapValidator.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="order-list" id="orderList" style="padding-bottom: 50px">
+
+</div>
+<div class="nav-bottom">
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <div class="row rowHeight atnl-font-weight-400" align="center">
+                <div class="col-md-4 col-sm-4 col-xs-4 dropup">
+                    <div class="row rowHeight">
+                        <!--<button type="button" class="btn btn-default navbar-btn btn-block">我的</button>-->
+                        <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            我的
+                            <span class="sr-only"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="./invite.html">我的邀请</a></li>
+                            <li><a href="./orderlist.html">我的订单</a></li>
+                            <li><a href="./wallet.html">我的钱包</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-4">
+                    <div class="row rowHeight">
+                        <button type="button" class="btn btn-default navbar-btn btn-block" onclick="jumppage('index.html')">阿图纳拉</button>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-4">
+                    <div class="row rowHeight">
+                        <button type="button" class="btn btn-default navbar-btn btn-block" onclick="jumppage('productlist.html')">商品列表</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="bottom-payway-eth navbar-fixed-bottom" id="payWayEth" hidden>
+    <div style="width: 100%;height: 15px">
+        <i class="glyphicon glyphicon-remove pull-right" id="closeEthPay"></i>
+    </div>
+    <p>我们每天晚上九点后进行ETH对账，会更新订单状态</p>
+    <p>已购88元抵288活动的用户请联系客服返现</p>
+
+    <div class="eth-ts atnl-color-2">你需要支付<span id="eth"></span>个Eth,购买整只羊羔礼盒</div>
+    <div class="eth-ts atnl-color-2">官方收款地址</div>
+    <div class="eth-ts atnl-color-2">0x82Df18eB4C1F8bc8f1C3dd342C7CEffCa4206831</div>
+    <div class="eth-ts-r atnl-color-qd">转账的时候备注本人手机号码</div>
+    <button type="button" class="btn btn-reg" id="btnInvite"
+            data-clipboard-text="0x82Df18eB4C1F8bc8f1C3dd342C7CEffCa4206831">复制地址
+    </button>
+</div>
+<script src="./resource/js/jquery.min.js"></script>
+<script src="./resource/js/bootstrap.min.js"></script>
+<script src="./resource/js/bootstrapValidator.js"></script>
+<script src="./resource/js/utils.js"></script>
+<script src="./resource/js/clipboard.min.js"></script>
+<script src="./resource/js/functions.js"></script>
+<script type="text/javascript">
+    $(function () {
+        post('user/info', {}, function (data) {
+            if (data.err != "") {
+                window.location.href = 'login.html';
+            }
+        });
+
+        post('order/mine', {}, function (data) {
+            if (data.err != "") {
+
+            } else {
+                var html = '';
+                var htmlall = '';
+                var orderlist = data.data;
+                if (data.data.length <= 0) {
+                    htmlall = '没有订单！';
+                } else {
+                    for (var i = 0; i < orderlist.length; i++) {
+                        if(orderlist[i].paytype == 1||orderlist[i].paytype == 2 ){
+                            var str = '';
+                            var strbtn = '';
+                            if (orderlist[i].state == 1) {
+                                str = "待支付"
+                                strbtn = '<button type="button" class="btn btn-reg" onclick="toPay(' + orderlist[i].id + ',' + orderlist[i].paytype+ ')">去支付</button>'
+                            }
+                            if (orderlist[i].state == 2) {
+                                str = "未发货";
+                                strbtn = '';
+                            }
+                            if (orderlist[i].state == 3) {
+                                str = "已发货"
+                                strbtn = '';
+                            }
+                            if (orderlist[i].state == 4) {
+                                str = "完成"
+                                strbtn = '<button type="button" class="btn btn-reg" onclick="toBuy(' + orderlist[i].pid + ')">再来一单</button>';
+                            }
+                            if (orderlist[i].state == 0) {
+                                str = "取消"
+                                strbtn = '';
+                            }
+                            html = '<div class="order-list-item" onclick="goDetail(' + orderlist[i].id + ')"> ' +
+                                    '<div class="order-list-top"> ' +
+                                    '<span class="order-list-top-left">订单编号：' + orderlist[i].id + '</span> ' +
+                                    '<span class="order-list-top-rigth">' + str + '</span> ' +
+                                    '</div> ' +
+                                    '<div class="order-list-content"> ' +
+                                    '<div class="order-list-content-left"> ' +
+                                    '<img src="'+orderlist[i].logo +'" class="img-responsive"> ' +
+                                    '</div> ' +
+                                    '<div class="order-list-content-center">' + orderlist[i].pname + '</div> ' +
+                                    '<div class="order-list-content-right"> ' +
+                                    '<div class="price">￥' + orderlist[i].pprice + '</div> ' +
+                                    '<div class="num">x&nbsp;' + orderlist[i].count + '</div> ' +
+                                    '<div class="countmoney">合计：<span class="atnl-color-qd">￥' + orderlist[i].realprice + '</span></div> ' +
+                                    '<div class="countmoney" onclick="event.cancelBubble=true">' + strbtn + '</div> ' +
+                                    '</div> ' +
+                                    '</div> ' +
+                                    '<div class="clear"></div> ' +
+                                    '</div> ';
+                            htmlall = html + htmlall;
+                        }
+
+                    }
+                }
+                $("#orderList").html(htmlall);
+            }
+        });
+
+        $("#closeEthPay").click(function(){
+            $("#payWayEth").hide();
+        })
+    });
+
+    var clipboard = new ClipboardJS('#btnInvite');
+
+    clipboard.on('success', function (e) {
+        alert("地址已复制到剪切板，粘贴到钱包支付！");
+        e.clearSelection();
+    });
+
+    clipboard.on('error', function (e) {
+    });
+
+    function toPay(oid, paytype) {
+        if (paytype == 1){
+            if (is_weixn()) {
+                toWxPay('wx/pay', oid);
+//                window.location.href='http://wx.atunala.com/app/wx/pay?oid='+oid;
+//                post('wx/pay', {oid:oid}, function (data) {
+//                    if (data.err != "") {
+//                        if(data.err==undefined){
+//                            alert("222")
+//                            $('body').append(data);
+//                            alert("3333")
+//                            $("form").attr("target", "_blank");
+//                            alert("444")
+//                        }else {
+//                            alert(data.err);
+//                        }
+//                    }
+//                });
+            } else {
+                post('alipay/pay', {oid:oid}, function (data) {
+                    if (data.err != "") {
+                        if(data.err==undefined){
+                            $('body').append(data);
+                            $("form").attr("target", "_blank");
+                        }else {
+                            alert(data.err);
+                        }
+                    }
+                });
+            }
+        }
+        if (paytype == 2){
+            post('order/get', {oid:oid}, function (data) {
+                if (data.err != "") {
+
+                } else {
+                    $("#eth").html(data.data.eth);
+                }
+            });
+            $("#payWayEth").show();
+        }
+
+    }
+
+    function goDetail(id) {
+        window.location.href = 'orderinfo.html?oid=' + id;
+    }
+</script>
+</body>
+</html>
