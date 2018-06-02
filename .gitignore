@@ -1,5 +1,7 @@
 /appserver/target
 /appserver/.sts4-cache
+/appserver/.settings
+/appserver/.classpath
 WXPayConfigImpl.java
 AlipayConfig.java
 config.properties

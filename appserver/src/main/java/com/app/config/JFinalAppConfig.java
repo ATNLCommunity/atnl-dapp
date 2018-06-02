@@ -9,6 +9,7 @@ import com.app.controller.OrderController;
 import com.app.controller.ProductController;
 import com.app.controller.QuanController;
 import com.app.controller.UserController;
+import com.app.controller.VoteController;
 import com.app.controller.WxController;
 import com.app.model.Addr;
 import com.app.model.Device;
@@ -21,6 +22,7 @@ import com.app.model.Quan;
 import com.app.model.Sheep;
 import com.app.model.Step;
 import com.app.model.User;
+import com.app.model.Vote;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -56,6 +58,7 @@ public class JFinalAppConfig extends JFinalConfig {
         routes.add("/product", ProductController.class);
         routes.add("/quan", QuanController.class);
         routes.add("/alipay", AlipayController.class);
+        routes.add("/vote", VoteController.class);
     }
 
     @Override
@@ -89,6 +92,7 @@ public class JFinalAppConfig extends JFinalConfig {
         arp.addMapping("addr", Addr.class);
         arp.addMapping("presell", PreSell.class);
         arp.addMapping("invite", Invite.class);
+        arp.addMapping("vote", Vote.class);
     }
 
     @Override
