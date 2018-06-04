@@ -14,6 +14,6 @@ public class Vote extends Model<Vote>
 
     public Vote findByUid(Long uid)
     {
-        return findFirst("SELECT * FROM VOTE WHERE uid=?", uid);
+        return findFirst("SELECT * FROM vote WHERE uid=?", uid);
     }
 }

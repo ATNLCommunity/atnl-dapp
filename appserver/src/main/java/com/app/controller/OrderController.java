@@ -91,6 +91,11 @@ public class OrderController extends BaseController
         {
             if (qid != 0L) 
             {
+                if (count > 1)
+                {
+                    error("使用优惠券只能购买一个商品");
+                    return;
+                }
                 quan = Quan.dao.findByQid(uid, qid);
                 if (quan == null) 
                 {
