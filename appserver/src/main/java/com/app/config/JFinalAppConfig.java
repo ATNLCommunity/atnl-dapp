@@ -23,6 +23,7 @@ import com.app.model.Sheep;
 import com.app.model.Step;
 import com.app.model.User;
 import com.app.model.Vote;
+import com.app.model.VoteSeed;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -93,6 +94,7 @@ public class JFinalAppConfig extends JFinalConfig {
         arp.addMapping("presell", PreSell.class);
         arp.addMapping("invite", Invite.class);
         arp.addMapping("vote", Vote.class);
+        arp.addMapping("voteseed", VoteSeed.class);
     }
 
     @Override

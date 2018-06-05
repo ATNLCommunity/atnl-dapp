@@ -1,6 +1,7 @@
 package com.app.controller;
 
 import com.app.model.Vote;
+import com.app.model.VoteSeed;
 
 import n.fw.base.BaseController;
 import n.fw.utils.DateUtils;
@@ -50,5 +51,10 @@ public class VoteController extends BaseController
         }
 
         success(vote);
+    }
+
+    public void list()
+    {
+        success(VoteSeed.dao.getAll());
     }
 }
