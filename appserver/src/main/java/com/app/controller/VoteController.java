@@ -1,7 +1,10 @@
 package com.app.controller;
 
+import com.app.model.User;
 import com.app.model.Vote;
 import com.app.model.VoteSeed;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
 
 import n.fw.base.BaseController;
 import n.fw.utils.DateUtils;
@@ -25,6 +28,23 @@ public class VoteController extends BaseController
             return;
         }
 
+        User user = User.dao.findByUid(uid);
+        if (user == null)
+        {
+            errorForbidden();
+            return;
+        }
+
+        float atnl = user.getFloat(User.ATNL);
+        if (atnl < 200)
+        {
+            error("ATNL 不够");
+            return;
+        }
+
+        user.set(User.ATNL, atnl - 200);
+        user.update();
+
         vote = new Vote();
         vote.set(Vote.UID, uid);
         vote.set(Vote.IDX, idx);
@@ -43,7 +63,7 @@ public class VoteController extends BaseController
             return;
         }
 
-        Vote vote = Vote.dao.findByUid(uid);
+        Record vote = Db.findFirst("SELECT voteseed.*,vote.update_time FROM vote INNER JOIN voteseed ON vote.idx=voteseed.id WHERE vote.uid=?", uid);
         if (vote == null)
         {
             error("你还没投过票");
