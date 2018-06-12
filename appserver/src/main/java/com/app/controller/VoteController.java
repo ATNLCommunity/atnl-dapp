@@ -1,5 +1,7 @@
 package com.app.controller;
 
+import java.util.Date;
+
 import com.app.model.User;
 import com.app.model.Vote;
 import com.app.model.VoteSeed;
@@ -25,6 +27,14 @@ public class VoteController extends BaseController
         if (vote != null)
         {
             error("你已经投过票");
+            return;
+        }
+
+        Date date = DateUtils.parseDate("2018-06-14");
+        Date now = new Date();
+        if (now.after(date))
+        {
+            error("投票已经结束");
             return;
         }
 
