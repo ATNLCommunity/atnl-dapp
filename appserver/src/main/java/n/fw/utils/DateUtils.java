@@ -145,7 +145,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setFirstDayOfWeek(2);
         calendar.setTime(new Date());
-        return calendar.get(3);
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
     public static int getWeekNumber(Date date)
@@ -153,7 +153,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setFirstDayOfWeek(2);
         calendar.setTime(date);
-        return calendar.get(3);
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
     private static String parsePatterns[] = { "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm" };

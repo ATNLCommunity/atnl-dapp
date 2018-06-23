@@ -9,11 +9,18 @@ import com.app.controller.OrderController;
 import com.app.controller.ProductController;
 import com.app.controller.QuanController;
 import com.app.controller.UserController;
+import com.app.controller.UserSheepController;
+import com.app.controller.SheepController;
 import com.app.controller.VoteController;
 import com.app.controller.WxController;
 import com.app.model.Addr;
+import com.app.model.AtnlAddRecord;
+import com.app.model.BasicRecord;
 import com.app.model.Device;
+import com.app.model.DistanceRecord;
+import com.app.model.EventRecord;
 import com.app.model.Gps;
+import com.app.model.GpsRecord;
 import com.app.model.Invite;
 import com.app.model.Order;
 import com.app.model.PreSell;
@@ -21,7 +28,9 @@ import com.app.model.Product;
 import com.app.model.Quan;
 import com.app.model.Sheep;
 import com.app.model.Step;
+import com.app.model.StepRecord;
 import com.app.model.User;
+import com.app.model.UserSheep;
 import com.app.model.Vote;
 import com.app.model.VoteSeed;
 import com.jfinal.config.Constants;
@@ -60,6 +69,8 @@ public class JFinalAppConfig extends JFinalConfig {
         routes.add("/quan", QuanController.class);
         routes.add("/alipay", AlipayController.class);
         routes.add("/vote", VoteController.class);
+        routes.add("/usersheep", UserSheepController.class);
+        routes.add("/sheep", SheepController.class);
     }
 
     @Override
@@ -95,6 +106,13 @@ public class JFinalAppConfig extends JFinalConfig {
         arp.addMapping("invite", Invite.class);
         arp.addMapping("vote", Vote.class);
         arp.addMapping("voteseed", VoteSeed.class);
+        arp.addMapping("usersheep", UserSheep.class);
+        arp.addMapping("basicrecord", BasicRecord.class);
+        arp.addMapping("atnladdrecord", AtnlAddRecord.class);
+        arp.addMapping("distancerecord", DistanceRecord.class);
+        arp.addMapping("gpsrecord", GpsRecord.class);
+        arp.addMapping("steprecord", StepRecord.class);
+        arp.addMapping("eventrecord", EventRecord.class);
     }
 
     @Override

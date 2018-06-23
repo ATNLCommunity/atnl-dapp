@@ -2,6 +2,7 @@ package com.app.model;
 
 import java.util.List;
 
+
 import com.jfinal.plugin.activerecord.Model;
 
 public class Sheep extends Model<Sheep>
@@ -18,5 +19,15 @@ public class Sheep extends Model<Sheep>
     public List<Sheep> getSheep(Integer count)
     {
         return find("SELECT * FROM sheep WHERE state=0 LIMIT ?", count);
+    }
+    
+    public List<Sheep> list(int page)
+    {
+    	return find("SELECT * FROM sheep WHERE state=0 LIMIT ?,20", page * 20);
+    }
+    
+    public Sheep findById(Long id)
+    {
+    	return findFirst("SELECT * FROM sheep WHERE id=?",id);
     }
 }
