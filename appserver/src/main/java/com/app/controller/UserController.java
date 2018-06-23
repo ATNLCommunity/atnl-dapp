@@ -130,7 +130,7 @@ public class UserController extends BaseController {
 
 					//inviter.set(User.LOCKATNL, inviter.getFloat(User.LOCKATNL) + inviteGift);
 					//inviter.update();
-					reward(inviteId, inviteGift.intValue(), 1, 1, 6);
+					reward(inviteId, inviteGift.intValue(), 1, 1, 1);
 				}
 			}
 			else
