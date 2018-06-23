@@ -82,7 +82,7 @@ public class OrderController extends BaseController
         
         Long qid = getParaToLong("qid", 0L);
 
-        Float price = product.getFloat(Product.PRICE) * count;
+        Float price = product.getFloat(Product.PRICE) * count + product.getFloat(Product.YF);
         Float realPrice = price;
         Float eth = product.getFloat(Product.ETH);
 
@@ -263,7 +263,7 @@ public class OrderController extends BaseController
             return;
         }
         
-        Float price = product.getFloat(Product.PRICE) * count;
+        Float price = product.getFloat(Product.PRICE) * count + product.getFloat(Product.YF);
         Float realPrice = price;
         Float eth = product.getFloat(Product.ETH);
         Float atnl = product.getFloat(Product.ATNL);

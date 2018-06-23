@@ -2,6 +2,7 @@ package n.fw.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
@@ -94,7 +95,13 @@ public class SmsUtils
             //组装请求对象-具体描述见控制台-文档部分内容
             SingleCallByTtsRequest request = new SingleCallByTtsRequest();
             //必填-被叫显号,可在语音控制台中找到所购买的显号
-            request.setCalledShowNumber("04756550021");
+            String[] sendPhones = {"04756550449", "04756550450", "04756550190"};
+            int rand = new Random().nextInt(sendPhones.length);
+            if (rand >= sendPhones.length)
+            {
+                rand = 0;
+            }
+            request.setCalledShowNumber(sendPhones[rand]);
 
             //必填-被叫号码
             request.setCalledNumber(phone);

@@ -27,6 +27,7 @@ public class Product extends Model<Product>
     public static final String LOGO = "logo";
     public static final String DETAIL = "detail";
     public static final String URL = "url";
+    public static final String YF = "yf";
     public static final String EXPIRE_TIME = "expire_time";
 
     public Product create(Float oprice, Float price, Float eth, Float atnl, Float gift, Integer count, Integer type, String name, String logo, String detail, String url, String sendDate, String expireTime)
@@ -63,6 +64,10 @@ public class Product extends Model<Product>
 
     public List<Product> getProducts(Integer type)
     {
+        if (type == -1)
+        {
+            return find("SELECT * FROM product WHERE expire_time>=NOW() AND count!=0 LIMIT 7");
+        }
         return find("SELECT * FROM product WHERE type=? AND expire_time>=NOW() AND count!=0", type);
     }
 
