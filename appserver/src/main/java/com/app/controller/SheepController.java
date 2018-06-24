@@ -1,6 +1,8 @@
 package com.app.controller;
 
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -175,6 +177,7 @@ public class SheepController extends BaseController
 		float fri = 0;		
 		float sat = 0;
 		float sun = 0;
+		
 		for(DistanceRecord dr: list)
 		{
 			switch(DateUtils.getWeekNumber(dr.getDate("recordtime")))
@@ -211,7 +214,15 @@ public class SheepController extends BaseController
         map.put("wed", wed);
         map.put("thu", thu);
         map.put("fri", fri);
-        map.put("sat", sat);       
+        map.put("sat", sat);
+        Date startDate = DateUtils.getFirstDayOfWeek(DateUtils.parseDate(date));
+		Date endDate =DateUtils.getLastDayOfWeek(DateUtils.parseDate(date));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate);
+        String start = (cal.get(Calendar.MONTH)+1)+"/"+cal.get(Calendar.DAY_OF_MONTH);
+        cal.setTime(endDate);
+        String end = (cal.get(Calendar.MONTH)+1)+"/"+cal.get(Calendar.DAY_OF_MONTH);
+        map.put("s2e",start+"-"+end);
         success(map);
 	}
 	/**
@@ -271,7 +282,60 @@ public class SheepController extends BaseController
         map.put("wed", wed);
         map.put("thu", thu);
         map.put("fri", fri);
-        map.put("sat", sat);       
+        map.put("sat", sat);
+        Date startDate = DateUtils.getFirstDayOfWeek(DateUtils.parseDate(date));
+		Date endDate =DateUtils.getLastDayOfWeek(DateUtils.parseDate(date));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate);
+        String start = (cal.get(Calendar.MONTH)+1)+"/"+cal.get(Calendar.DAY_OF_MONTH);
+        cal.setTime(endDate);
+        String end = (cal.get(Calendar.MONTH)+1)+"/"+cal.get(Calendar.DAY_OF_MONTH);
+        map.put("s2e",start+"-"+end);
         success(map);
+	}
+	/**
+	 * 按月呈现距离信息
+	 * 
+	 */
+	public void getDistanceByGroupMonth()
+	{
+		Long sheepid = getParaToLong("sheepid", 0l);
+		if (sheepid <= 0)
+        {
+            error("该羊羔已经不存在了");
+            return;
+        }
+		String date = getPara("date");
+		success(DistanceRecord.dao.getByGroupMonth(sheepid, date));
+	}
+	/**
+	 * 按月呈现距离信息
+	 * 
+	 */
+	public void getStepByGroupMonth()
+	{
+		Long sheepid = getParaToLong("sheepid", 0l);
+		if (sheepid <= 0)
+        {
+            error("该羊羔已经不存在了");
+            return;
+        }
+		String date = getPara("date");
+		success(StepRecord.dao.getByGroupMonth(sheepid, date));
+	}
+	/**
+	 * 财富榜
+	 */
+	public void getWealthTop()
+	{
+		success(AtnlAddRecord.dao.getTop20());
+	}
+	
+	/**
+	 * 运动榜
+	 */
+	public void getSportsTop()
+	{
+		success(DistanceRecord.dao.getTop20());
 	}
 }
