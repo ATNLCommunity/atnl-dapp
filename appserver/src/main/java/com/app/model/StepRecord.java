@@ -1,8 +1,13 @@
 package com.app.model;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
+
+import n.fw.utils.DateUtils;
 
 public class StepRecord extends Model<StepRecord> {
 
@@ -35,5 +40,14 @@ public class StepRecord extends Model<StepRecord> {
     public List<StepRecord> getByMonth(Long sheepid,String date)
     {
     	return find("SELECT * FROM steprecord WHERE sheepid=? and YEAR(recordtime) = YEAR(?) and MONTH(recordtime) = MONTH(?)",sheepid,date,date);
+    }
+    
+    public List<Object> getByGroupMonth(Long sheepid,String date)
+    {
+    	Date mdate = DateUtils.parseDate(date);
+    	Calendar cal = Calendar.getInstance();
+        cal.setTime(mdate);
+    	return Db.query("SELECT sheepid,concat(YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as ymd,concat(sheepid,'-',YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as "
+    			+ "symd ,SUM(steps) as distance FROM steprecord GROUP BY symd HAVING symd=?",sheepid+"-"+cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DAY_OF_MONTH));
     }
 }
