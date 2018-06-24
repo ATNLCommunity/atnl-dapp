@@ -66,9 +66,9 @@ public class Product extends Model<Product>
     {
         if (type == -1)
         {
-            return find("SELECT * FROM product WHERE expire_time>=NOW() AND count!=0 LIMIT 7");
+            return find("SELECT * FROM product WHERE expire_time>=NOW() AND count!=0 ORDER BY id DESC LIMIT 7");
         }
-        return find("SELECT * FROM product WHERE type=? AND expire_time>=NOW() AND count!=0", type);
+        return find("SELECT * FROM product WHERE type=? AND expire_time>=NOW() AND count!=0 ORDER BY id DESC", type);
     }
 
     public Product findProduct(Long pid)
