@@ -6,6 +6,8 @@ import java.util.Map;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 
+
+
 public class WXPayDealer
 {
     private WXPayConfigImpl mConfig;
@@ -47,6 +49,7 @@ public class WXPayDealer
         }
     }
 
+    
     public Map<String, String> doOrderQuery(String tradeId) {
         System.out.println("查询订单");
         HashMap<String, String> data = new HashMap<String, String>();

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.app.config.Constants;
 import com.app.model.Order;
 import com.app.model.Product;
@@ -16,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import n.fw.base.BaseController;
 import n.fw.utils.DateUtils;
 import n.fw.utils.WxUtils;
+import n.fw.wxpay.WXPayAppDealer;
 import n.fw.wxpay.WXPayConfigImpl;
 import n.fw.wxpay.WXPayDealer;
 import net.sf.json.JSONObject;
@@ -210,6 +213,72 @@ public class WxController extends BaseController
         redirect(url);
     }
 
+    public void payByApp()
+    {
+        Long uid = getUid();
+        
+        Long oid = getParaToLong("oid", 0L);
+        if (oid == 0L)
+        {
+            error("订单id不能为空");
+            return;
+        }
+
+        Order order = Order.dao.findByOid(oid);
+        if (order == null)
+        {
+            error("订单id不能为空");
+            return;
+        }
+
+        Product product = Product.dao.findProduct(order.getLong(Order.PID));
+        if (product == null)
+        {
+            error("商品已经下架");
+            return;
+        }
+
+        Integer productCount = product.getInt(Product.COUNT);
+        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
+        {
+            error("库存不足");
+            return;
+        }
+
+        /**String openid = getPara("openid", "");
+        if (StringUtils.isBlank(openid))
+        {
+            openid = getSessionAttr("openid");
+            if (StringUtils.isBlank(openid))
+            {
+                String url = WxUtils.wxBaseUrl(Constants.BASE_URL + "/wx/pay?oid=" + oid);
+                redirect(url);
+                return;
+            }
+        }**/
+
+        System.out.println(order.getFloat(Order.REALPRICE));
+        Integer fee = (int)(order.getFloat(Order.REALPRICE) * 100);
+        if (fee <= 0)
+        {
+            error("不需要支付");
+            return;
+        }
+
+        String ret = WXPayAppDealer.dao.doAppUnifiedOrder("oid" + uid + "_" + oid, fee);
+        try {
+            HttpServletResponse response = getResponse();
+            response.getWriter().write(ret);// 直接将完整的表单html输出到页面
+            response.getWriter().flush();
+            response.getWriter().close();
+            renderText("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            renderText("");
+        }
+    }
+    
+    
     public void state()
     {
         String tradeId = getPara("oid", "");

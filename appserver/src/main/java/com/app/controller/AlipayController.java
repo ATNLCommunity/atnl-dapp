@@ -202,4 +202,56 @@ public class AlipayController extends BaseController {
             renderText("");
         }
     }
+    
+    public void payByApp() {
+        Long uid = getUid();
+        
+        Long oid = getParaToLong("oid", 0L);
+        if (oid == 0L) {
+            error("订单id不能为空");
+            return;
+        }
+
+        Order order = Order.dao.findByOid(oid);
+        if (order == null) {
+            error("订单id不能为空");
+            return;
+        }
+
+        Product product = Product.dao.findProduct(order.getLong(Order.PID));
+        if (product == null)
+        {
+            error("商品已经下架");
+            return;
+        }
+
+        Integer productCount = product.getInt(Product.COUNT);
+        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
+        {
+            error("库存不足");
+            return;
+        }
+        Float fee = order.getFloat(Order.REALPRICE);
+        if (fee <= 0)
+        {
+            error("不需要支付");
+            return;
+        }
+
+        String ret = AlipayDealer.appPay("oid" + uid + "_" + oid, "order", fee.toString(), "");
+        // System.out.println("pay - " + DateUtils.getDateTime() + " pay id=" + oid + "
+        // content : " + ret);
+
+        try {
+            HttpServletResponse response = getResponse();
+            response.getWriter().write(ret);// 直接将完整的表单html输出到页面
+            response.getWriter().flush();
+            response.getWriter().close();
+            renderText("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            renderText("");
+        }
+        
+    }
 }
