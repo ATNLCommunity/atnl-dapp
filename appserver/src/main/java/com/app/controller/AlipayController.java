@@ -12,6 +12,7 @@ import com.app.model.Order;
 import com.app.model.Product;
 import com.app.model.Sheep;
 import com.app.model.User;
+import com.app.model.UserSheep;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -72,62 +73,82 @@ public class AlipayController extends BaseController {
                 if (StringUtils.equals(trade_status, "TRADE_SUCCESS"))
                 {
                     String[] strs = out_trade_no.split("_");
-                    if (strs.length == 2) {
-                        Order order = Order.dao.findByOid(Long.parseLong(strs[1]));
-                        if (order != null) {
-                            StringBuffer extra = new StringBuffer();
-                            Long pid = order.getLong(Order.PID);
-                            if (pid == 1)
-                            {
-                                List<Sheep> sheeps = Sheep.dao.getSheep(order.getInt(Order.COUNT));
-                                for (Sheep sheep : sheeps) {
-                                    if (extra.length() > 0) {
-                                        extra.append('|');
-                                    }
-                                    extra.append(sheep.getStr(Sheep.SID));
-                                    sheep.set(Sheep.STATE, 1);
-                                    sheep.update();
-                                }
+                    if (strs.length == 3) {
+                    	if(Integer.parseInt(strs[2]) >0)
+                    	{
+                    		UserSheep us = UserSheep.dao.findByOid(Long.parseLong(strs[1]));
+                    		if(us != null)
+                    		{
+                    			us.set(UserSheep.PAYSTATUS, 1);
+                                us.set(UserSheep.PAYTIME, DateUtils.getDateTime());
+                                us.update();
+                                response.getWriter().write("success");// 直接将完整的表单html输出到页面
+                                response.getWriter().flush();
+                                response.getWriter().close();
+                                renderText("");
+                                return;
                             }
-                            order.set(Order.PAYMENT, amount);
-                            order.set(Order.EXTRA, extra.toString());
-                            order.set(Order.STATE, 2);
-                            order.set(Order.PAYSTATE, 1);
-                            order.set(Order.PAY_TIME, DateUtils.getDateTime());
-                            order.update();
-    
-                            Product product = Product.dao.findProduct(pid);
-                            if (product != null) {
-                                Integer productCount = product.getInt(Product.COUNT);
-                                System.out.println("product count = " + productCount);
-                                if (productCount > 0) {
-                                    System.out.println("product count new = " + (productCount - order.getInt(Order.COUNT)));
-                                    product.set(Product.COUNT, productCount - order.getInt(Order.COUNT));
-                                    product.update();
-                                }
-    
-                                Float gift = product.getFloat(Product.GIFT);
-                                Float lp = product.getFloat(Product.LP);
-                                if (gift > 0 || lp > 0)
+                        }
+                    	else
+                    	{
+                    		Order order = Order.dao.findByOid(Long.parseLong(strs[1]));
+                            if (order != null) {
+                                StringBuffer extra = new StringBuffer();
+                                Long pid = order.getLong(Order.PID);
+                                if (pid == 1)
                                 {
-                                    User user = User.dao.findByUid(order.getLong(Order.UID));
-                                    if (user != null)
-                                    {
-                                        user.set(User.ATNL, user.getFloat(User.ATNL) + gift);
-                                        user.set(User.LP, user.getFloat(User.LP) + lp);
-                                        user.update();
+                                    List<Sheep> sheeps = Sheep.dao.getSheep(order.getInt(Order.COUNT));
+                                    for (Sheep sheep : sheeps) {
+                                        if (extra.length() > 0) {
+                                            extra.append('|');
+                                        }
+                                        extra.append(sheep.getStr(Sheep.SID));
+                                        sheep.set(Sheep.STATE, 1);
+                                        sheep.update();
                                     }
                                 }
+                                order.set(Order.PAYMENT, amount);
+                                order.set(Order.EXTRA, extra.toString());
+                                order.set(Order.STATE, 2);
+                                order.set(Order.PAYSTATE, 1);
+                                order.set(Order.PAY_TIME, DateUtils.getDateTime());
+                                order.update();
+        
+                                Product product = Product.dao.findProduct(pid);
+                                if (product != null) {
+                                    Integer productCount = product.getInt(Product.COUNT);
+                                    System.out.println("product count = " + productCount);
+                                    if (productCount > 0) {
+                                        System.out.println("product count new = " + (productCount - order.getInt(Order.COUNT)));
+                                        product.set(Product.COUNT, productCount - order.getInt(Order.COUNT));
+                                        product.update();
+                                    }
+        
+                                    Float gift = product.getFloat(Product.GIFT);
+                                    Float lp = product.getFloat(Product.LP);
+                                    if (gift > 0 || lp > 0)
+                                    {
+                                        User user = User.dao.findByUid(order.getLong(Order.UID));
+                                        if (user != null)
+                                        {
+                                            user.set(User.ATNL, user.getFloat(User.ATNL) + gift);
+                                            user.set(User.LP, user.getFloat(User.LP) + lp);
+                                            user.update();
+                                        }
+                                    }
+                                }
+        
+                                response.getWriter().write("success");// 直接将完整的表单html输出到页面
+                                response.getWriter().flush();
+                                response.getWriter().close();
+                                renderText("");
+                                return;
                             }
-    
-                            response.getWriter().write("success");// 直接将完整的表单html输出到页面
-                            response.getWriter().flush();
-                            response.getWriter().close();
-                            renderText("");
-                            return;
                         }
                     }
-                }
+                    	}
+                    	
+                        
                 response.getWriter().write("fail");// 直接将完整的表单html输出到页面
                 response.getWriter().flush();
                 response.getWriter().close();
@@ -159,34 +180,42 @@ public class AlipayController extends BaseController {
             error("订单id不能为空");
             return;
         }
-
-        Order order = Order.dao.findByOid(oid);
-        if (order == null) {
-            error("订单id不能为空");
-            return;
-        }
-
-        Product product = Product.dao.findProduct(order.getLong(Order.PID));
-        if (product == null)
+        Float fee = 0f;
+        Integer otype = getParaToInt("otype", 0);
+        if(otype > 0)
         {
-            error("商品已经下架");
-            return;
+        	UserSheep  us = UserSheep.dao.findByOid(oid);
+        	fee = us.getFloat("paymoney");	
         }
-
-        Integer productCount = product.getInt(Product.COUNT);
-        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
+        else
         {
-            error("库存不足");
-            return;
+	        Order order = Order.dao.findByOid(oid);
+	        if (order == null) {
+	            error("订单id不能为空");
+	            return;
+	        }
+	
+	        Product product = Product.dao.findProduct(order.getLong(Order.PID));
+	        if (product == null)
+	        {
+	            error("商品已经下架");
+	            return;
+	        }
+	
+	        Integer productCount = product.getInt(Product.COUNT);
+	        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
+	        {
+	            error("库存不足");
+	            return;
+	        }
+	        fee = order.getFloat(Order.REALPRICE);
+	        if (fee <= 0)
+	        {
+	            error("不需要支付");
+	            return;
+	        }
         }
-        Float fee = order.getFloat(Order.REALPRICE);
-        if (fee <= 0)
-        {
-            error("不需要支付");
-            return;
-        }
-
-        String ret = AlipayDealer.pay("oid" + uid + "_" + oid, "order", fee.toString(), "");
+        String ret = AlipayDealer.pay("oid" + uid + "_" + oid+"_"+otype, "order", fee.toString(), "");
         // System.out.println("pay - " + DateUtils.getDateTime() + " pay id=" + oid + "
         // content : " + ret);
 
@@ -211,34 +240,42 @@ public class AlipayController extends BaseController {
             error("订单id不能为空");
             return;
         }
-
-        Order order = Order.dao.findByOid(oid);
-        if (order == null) {
-            error("订单id不能为空");
-            return;
-        }
-
-        Product product = Product.dao.findProduct(order.getLong(Order.PID));
-        if (product == null)
+        Float fee = 0f;
+        Integer otype = getParaToInt("otype", 0);
+        if(otype > 0)
         {
-            error("商品已经下架");
-            return;
+        	UserSheep  us = UserSheep.dao.findByOid(oid);
+        	fee = us.getFloat("paymoney");	
         }
-
-        Integer productCount = product.getInt(Product.COUNT);
-        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
+        else
         {
-            error("库存不足");
-            return;
+	        Order order = Order.dao.findByOid(oid);
+	        if (order == null) {
+	            error("订单id不能为空");
+	            return;
+	        }
+	
+	        Product product = Product.dao.findProduct(order.getLong(Order.PID));
+	        if (product == null)
+	        {
+	            error("商品已经下架");
+	            return;
+	        }
+	
+	        Integer productCount = product.getInt(Product.COUNT);
+	        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
+	        {
+	            error("库存不足");
+	            return;
+	        }
+	        fee = order.getFloat(Order.REALPRICE);
+	        if (fee <= 0)
+	        {
+	            error("不需要支付");
+	            return;
+	        }
         }
-        Float fee = order.getFloat(Order.REALPRICE);
-        if (fee <= 0)
-        {
-            error("不需要支付");
-            return;
-        }
-
-        String ret = AlipayDealer.appPay("oid" + uid + "_" + oid, "order", fee.toString(), "");
+        String ret = AlipayDealer.appPay("oid" + uid + "_" + oid+"_"+otype, "order", fee.toString(), "");
         // System.out.println("pay - " + DateUtils.getDateTime() + " pay id=" + oid + "
         // content : " + ret);
 

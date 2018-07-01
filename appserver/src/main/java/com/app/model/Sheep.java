@@ -15,6 +15,7 @@ public class Sheep extends Model<Sheep>
     public static final String STATE = "state";
     public static final String SID = "sid";
     public static final String UPDATE_TIME = "update_time";
+    public static final String PRICE = "price";
 
     public List<Sheep> getSheep(Integer count)
     {

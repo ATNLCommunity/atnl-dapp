@@ -11,6 +11,7 @@ import com.app.model.Order;
 import com.app.model.Product;
 import com.app.model.Sheep;
 import com.app.model.User;
+import com.app.model.UserSheep;
 import com.github.wxpay.sdk.WXPayUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -59,8 +60,22 @@ public class WxController extends BaseController
             if (StringUtils.equals(result_code, "SUCCESS"))
             {
                 String[] strs = out_trade_no.split("_");
-                if (strs.length == 2) 
+                if (strs.length == 3) 
                 {
+                	if(Integer.parseInt(strs[2]) >0)
+                	{
+                		UserSheep us = UserSheep.dao.findByOid(Long.parseLong(strs[1]));
+                		if(us != null)
+                		{
+                			us.set(UserSheep.PAYSTATUS, 1);
+                            us.set(UserSheep.PAYTIME, DateUtils.getDateTime());
+                            us.update();
+                            String returnResutStr = "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
+                            System.out.println(returnResutStr);
+                            renderText(returnResutStr);
+                            return;
+                        }
+                    }
                     Order order = Order.dao.findByOid(Long.parseLong(strs[1]));
                     if (order != null)
                     {
@@ -115,10 +130,7 @@ public class WxController extends BaseController
                             }
                         }
 
-                        String returnResutStr = "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
-                        System.out.println(returnResutStr);
-                        renderText(returnResutStr);
-
+                        
                         return;
                     }
                 }
@@ -160,27 +172,42 @@ public class WxController extends BaseController
             error("订单id不能为空");
             return;
         }
-
-        Order order = Order.dao.findByOid(oid);
-        if (order == null)
+        
+        Integer fee = 0;
+        Integer otype = getParaToInt("otype", 0);
+        if(otype > 0)
         {
-            error("订单id不能为空");
-            return;
+        	UserSheep  us = UserSheep.dao.findByOid(oid);
+        	fee = (int)(us.getFloat("paymoney")*100);	
         }
-
-        Product product = Product.dao.findProduct(order.getLong(Order.PID));
-        if (product == null)
+        else
         {
-            error("商品已经下架");
-            return;
-        }
+        	Order order = Order.dao.findByOid(oid);
+            if (order == null)
+            {
+                error("订单id不能为空");
+                return;
+            }
+            Product product = Product.dao.findProduct(order.getLong(Order.PID));
+            if (product == null)
+            {
+                error("商品已经下架");
+                return;
+            }
 
-        Integer productCount = product.getInt(Product.COUNT);
-        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
-        {
-            error("库存不足");
-            return;
-        }
+            Integer productCount = product.getInt(Product.COUNT);
+            if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
+            {
+                error("库存不足");
+                return;
+            }
+            fee = (int)(order.getFloat(Order.REALPRICE) * 100);
+            if (fee <= 0)
+            {
+                error("不需要支付");
+                return;
+            }
+        } 
 
         String openid = getPara("openid", "");
         if (StringUtils.isBlank(openid))
@@ -194,15 +221,7 @@ public class WxController extends BaseController
             }
         }
 
-        System.out.println(order.getFloat(Order.REALPRICE));
-        Integer fee = (int)(order.getFloat(Order.REALPRICE) * 100);
-        if (fee <= 0)
-        {
-            error("不需要支付");
-            return;
-        }
-        System.out.println("fee = " + fee.toString() + "  >> " + String.valueOf(fee));
-        Map<String, String> ret = WXPayDealer.dao.doUnifiedOrder("oid" + uid + "_" + oid, openid, fee);
+        Map<String, String> ret = WXPayDealer.dao.doUnifiedOrder("oid" + uid + "_" + oid+"_"+otype, openid, fee);
         String time =  System.currentTimeMillis() / 1000 + "";
         String prepay_id = ret.get("prepay_id");
         String nonce = WXPayUtil.generateNonceStr();
@@ -223,49 +242,45 @@ public class WxController extends BaseController
             error("订单id不能为空");
             return;
         }
-
-        Order order = Order.dao.findByOid(oid);
-        if (order == null)
+        Integer fee = 0;
+        Integer otype = getParaToInt("otype", 0);
+        if(otype > 0)
         {
-            error("订单id不能为空");
-            return;
+        	UserSheep  us = UserSheep.dao.findByOid(oid);
+        	fee = (int)(us.getFloat("paymoney")*100);	
+        }
+        else
+        {
+	        Order order = Order.dao.findByOid(oid);
+	        if (order == null)
+	        {
+	            error("订单id不能为空");
+	            return;
+	        }
+	
+	        Product product = Product.dao.findProduct(order.getLong(Order.PID));
+	        if (product == null)
+	        {
+	            error("商品已经下架");
+	            return;
+	        }
+	
+	        Integer productCount = product.getInt(Product.COUNT);
+	        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
+	        {
+	            error("库存不足");
+	            return;
+	        }
+	
+	        fee = (int)(order.getFloat(Order.REALPRICE) * 100);
+	        if (fee <= 0)
+	        {
+	            error("不需要支付");
+	            return;
+	        }
         }
 
-        Product product = Product.dao.findProduct(order.getLong(Order.PID));
-        if (product == null)
-        {
-            error("商品已经下架");
-            return;
-        }
-
-        Integer productCount = product.getInt(Product.COUNT);
-        if (productCount >= 0 && order.getInt(Order.COUNT) > productCount)
-        {
-            error("库存不足");
-            return;
-        }
-
-        /**String openid = getPara("openid", "");
-        if (StringUtils.isBlank(openid))
-        {
-            openid = getSessionAttr("openid");
-            if (StringUtils.isBlank(openid))
-            {
-                String url = WxUtils.wxBaseUrl(Constants.BASE_URL + "/wx/pay?oid=" + oid);
-                redirect(url);
-                return;
-            }
-        }**/
-
-        System.out.println(order.getFloat(Order.REALPRICE));
-        Integer fee = (int)(order.getFloat(Order.REALPRICE) * 100);
-        if (fee <= 0)
-        {
-            error("不需要支付");
-            return;
-        }
-
-        String ret = WXPayAppDealer.dao.doAppUnifiedOrder("oid" + uid + "_" + oid, fee);
+        String ret = WXPayAppDealer.dao.doAppUnifiedOrder("oid" + uid + "_" + oid+"_"+otype, fee,getRemoteClientIp());
         try {
             HttpServletResponse response = getResponse();
             response.getWriter().write(ret);// 直接将完整的表单html输出到页面

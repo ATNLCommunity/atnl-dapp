@@ -21,13 +21,14 @@ public class UserSheepController extends BaseController
             error("请先登录");
             return;
         }
-        UserSheep us = UserSheep.dao.create(uid, sheepid, 0, 0);
         Sheep sheep = Sheep.dao.findById(sheepid);
         if (null == sheep)
         {
             error(" 购买羊羔失败");
             return;
         }
+        UserSheep us = UserSheep.dao.create(uid, sheepid, 0, 0,sheep.getFloat("price"));
+        
         sheep.set("state", 1).update();
         success(us);
 	}
