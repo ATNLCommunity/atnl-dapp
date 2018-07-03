@@ -57,7 +57,14 @@ public class SheepController extends BaseController
         map.put("info", sheep);
         map.put("br", br);
         map.put("aar", aar);
-        map.put("sumatnl", aar.getAtnlSum(sheepid));
+        if(null != aar)
+        {
+        	map.put("sumatnl", aar.getAtnlSum(sheepid));
+        }
+        else
+        {
+        	map.put("sumatnl", 0);
+        }
         map.put("dr", dr);
         map.put("gr", gr);
         map.put("er", er);       

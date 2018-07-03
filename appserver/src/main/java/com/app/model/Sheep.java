@@ -16,7 +16,11 @@ public class Sheep extends Model<Sheep>
     public static final String SID = "sid";
     public static final String UPDATE_TIME = "update_time";
     public static final String PRICE = "price";
-
+    public static final String BIRTHDAY = "birthday";
+    public static final String WEIGHT = "weight";
+    public static final String HEIGHT = "height";
+    public static final String PREKILLTIME = "prekilltime";
+    
     public List<Sheep> getSheep(Integer count)
     {
         return find("SELECT * FROM sheep WHERE state=0 LIMIT ?", count);

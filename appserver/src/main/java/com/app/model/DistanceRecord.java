@@ -45,9 +45,9 @@ public class DistanceRecord extends Model<DistanceRecord> {
     	Date mdate = DateUtils.parseDate(date);
     	Calendar cal = Calendar.getInstance();
         cal.setTime(mdate);
-    	return Db.query("SELECT sheepid,concat(YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as ymd"
+    	return Db.query("SELECT sheepid,concat(sheepid,'-',YEAR(recordtime),'-',MONTH(recordtime)) as sym,concat(YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as ymd"
     			+ ",concat(sheepid,'-',YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as "
-    			+ "symd ,SUM(distance) as distance FROM distancerecord GROUP BY symd HAVING symd=?",sheepid+"-"+cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DAY_OF_MONTH));
+    			+ "symd ,SUM(distance) as distance FROM distancerecord GROUP BY symd HAVING sym=?",sheepid+"-"+cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1));
     }
     
     public List<Object> getTop20()
