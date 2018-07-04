@@ -54,6 +54,6 @@ public class DistanceRecord extends Model<DistanceRecord> {
     {
     	return Db.query("SELECT a.sheepid,SUM(distance) as distance,b.uid,c.name,d.sid FROM distancerecord a LEFT JOIN "
     			+ "usersheep b ON a.sheepid = b.sheepid LEFT JOIN `user` c ON b.uid = c.id LEFT JOIN sheep d "
-    			+ "ON a.sheepid= d.id GROUP BY a.sheepid ORDER BY distance DESC LIMIT 20");
+    			+ "ON a.sheepid= d.id GROUP BY a.sheepid having b.uid > 0 ORDER BY distance DESC  LIMIT 20");
     }
 }

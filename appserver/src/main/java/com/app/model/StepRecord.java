@@ -22,7 +22,7 @@ public class StepRecord extends Model<StepRecord> {
     public static final String RECORDTIME = "recordtime";
     public static final String STEPS = "steps";
 	
-    public StepRecord getLeastRecord(int sheepid)
+    public StepRecord getLeastRecord(Long sheepid)
     {
     	return findFirst("SELECT * FROM steprecord WHERE sheepid=? ORDER BY id DESC limit 1", sheepid);
     }

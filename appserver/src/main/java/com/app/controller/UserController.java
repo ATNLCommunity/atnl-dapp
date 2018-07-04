@@ -239,6 +239,11 @@ public class UserController extends BaseController {
 		user.put(User.PWD, null);
 		success(user);
 	}
+	
+	public void logout() {
+		removeSessionAttr("uid");
+		success("ok");
+	}
 
 	public void unlock()
 	{

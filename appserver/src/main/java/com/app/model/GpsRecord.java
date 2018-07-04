@@ -21,9 +21,9 @@ public class GpsRecord extends Model<GpsRecord> {
     public static final String LAT = "lat";
     public static final String HIGH = "high";
 
-    public List<GpsRecord> getAll()
+    public List<GpsRecord> getAll(Long sheepid)
     {
-        return find("SELECT * FROM gpsrecord WHERE id in (SELECT MAX(id) FROM gpsrecord GROUP by sheepid)");
+        return find("SELECT * FROM gpsrecord WHERE sheepid = ?",sheepid);
     }
 
     public GpsRecord getLeastRecord(Long sheepid)

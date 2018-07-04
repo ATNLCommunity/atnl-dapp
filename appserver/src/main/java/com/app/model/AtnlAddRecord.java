@@ -6,6 +6,8 @@ import java.util.List;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 
+import n.fw.utils.DateUtils;
+
 public class AtnlAddRecord extends Model<AtnlAddRecord> {
 
 	/**
@@ -19,6 +21,22 @@ public class AtnlAddRecord extends Model<AtnlAddRecord> {
     public static final String RECORDTIME = "recordtime";
     public static final String ATNLADD = "atnladd";
 	
+    public AtnlAddRecord create(Long sheepid,float atnladd)
+    {
+    	AtnlAddRecord aar = new AtnlAddRecord();
+        aar.set(SHEEPID, sheepid);
+        aar.set(ATNLADD, atnladd);
+        aar.set(RECORDTIME, DateUtils.getDateTime());
+
+
+        if (aar.save())
+        {
+            return aar;
+        }
+        return null;
+    }
+    
+    
     public AtnlAddRecord getLeastRecord(Long sheepid)
     {
     	return findFirst("SELECT * FROM atnladdrecord WHERE sheepid=? ORDER BY id DESC limit 1", sheepid);

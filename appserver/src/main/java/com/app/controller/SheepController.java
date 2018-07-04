@@ -53,6 +53,7 @@ public class SheepController extends BaseController
         DistanceRecord dr = DistanceRecord.dao.getLeastRecord(sheepid);
         GpsRecord gr = GpsRecord.dao.getLeastRecord(sheepid);
         EventRecord er = EventRecord.dao.getLeastRecord(sheepid);
+        StepRecord sr = StepRecord.dao.getLeastRecord(sheepid);
         HashMap<String, Object> map = new HashMap<String,Object>();
         map.put("info", sheep);
         map.put("br", br);
@@ -64,10 +65,13 @@ public class SheepController extends BaseController
         else
         {
         	map.put("sumatnl", 0);
+        	AtnlAddRecord.dao.create(sheepid, (float)Math.random()*100);
         }
         map.put("dr", dr);
         map.put("gr", gr);
-        map.put("er", er);       
+        map.put("er", er);  
+        map.put("sr", sr);
+        
         success(map);
 	}
 	
@@ -162,6 +166,19 @@ public class SheepController extends BaseController
 		String date = getPara("date");
 		success(GpsRecord.dao.getByDay(sheepid, date));
 	}
+	/**
+	 * 
+	 */
+	public void getGpsAll()
+	{
+		Long sheepid = getParaToLong("sheepid", 0l);
+		if (sheepid <= 0)
+        {
+            error("该羊羔已经不存在了");
+            return;
+        }
+		success(GpsRecord.dao.getAll(sheepid));
+	}
 	
 	/**
 	 * 按周呈现距离信息
@@ -232,6 +249,18 @@ public class SheepController extends BaseController
         map.put("s2e",start+"-"+end);
         success(map);
 	}
+	
+	public void getDistanceByWeekAll()
+	{
+		Long sheepid = getParaToLong("sheepid", 0l);
+		if (sheepid <= 0)
+        {
+            error("该羊羔已经不存在了");
+            return;
+        }
+		String date = getPara("date");
+		success(DistanceRecord.dao.getByWeek(sheepid, date));
+	}
 	/**
 	 * 按周呈现计步信息
 	 * 
@@ -264,7 +293,7 @@ public class SheepController extends BaseController
 					mon += dr.getInt("steps");
 					break;
 				case 3:
-					tue += dr.getFloat("steps");
+					tue += dr.getInt("steps");
 					break;
 				case 4:
 					wed += dr.getInt("steps");
@@ -300,6 +329,18 @@ public class SheepController extends BaseController
         map.put("s2e",start+"-"+end);
         success(map);
 	}
+	
+	public void getStepByWeekAll()
+	{
+		Long sheepid = getParaToLong("sheepid", 0l);
+		if (sheepid <= 0)
+        {
+            error("该羊羔已经不存在了");
+            return;
+        }
+		String date = getPara("date");
+		success(StepRecord.dao.getByWeek(sheepid, date));
+	}
 	/**
 	 * 按月呈现距离信息
 	 * 
@@ -315,6 +356,19 @@ public class SheepController extends BaseController
 		String date = getPara("date");
 		success(DistanceRecord.dao.getByGroupMonth(sheepid, date));
 	}
+	
+	
+	public void getDistanceByMonthAll()
+	{
+		Long sheepid = getParaToLong("sheepid", 0l);
+		if (sheepid <= 0)
+        {
+            error("该羊羔已经不存在了");
+            return;
+        }
+		String date = getPara("date");
+		success(DistanceRecord.dao.getByMonth(sheepid, date));
+	}
 	/**
 	 * 按月呈现距离信息
 	 * 
@@ -329,6 +383,18 @@ public class SheepController extends BaseController
         }
 		String date = getPara("date");
 		success(StepRecord.dao.getByGroupMonth(sheepid, date));
+	}
+	
+	public void getStepByMonthAll()
+	{
+		Long sheepid = getParaToLong("sheepid", 0l);
+		if (sheepid <= 0)
+        {
+            error("该羊羔已经不存在了");
+            return;
+        }
+		String date = getPara("date");
+		success(StepRecord.dao.getByMonth(sheepid, date));
 	}
 	/**
 	 * 财富榜
