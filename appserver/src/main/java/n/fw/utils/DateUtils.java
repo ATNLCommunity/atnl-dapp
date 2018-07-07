@@ -156,6 +156,18 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
+    /**
+     * 通过时间秒毫秒数判断两个时间的间隔
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static int differentDaysByMillisecond(Date date1,Date date2)
+    {
+        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
+        return days;
+    }
+    
     private static String parsePatterns[] = { "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm" };
 
 }
