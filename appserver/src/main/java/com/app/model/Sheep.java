@@ -20,6 +20,7 @@ public class Sheep extends Model<Sheep>
     public static final String WEIGHT = "weight";
     public static final String HEIGHT = "height";
     public static final String PREKILLTIME = "prekilltime";
+    public static final String DID = "did";
     
     public List<Sheep> getSheep(Integer count)
     {
@@ -28,7 +29,7 @@ public class Sheep extends Model<Sheep>
     
     public List<Sheep> list(int page)
     {
-    	return find("SELECT * FROM sheep WHERE state=0 LIMIT ?,20", page * 20);
+    	return find("SELECT * FROM sheep WHERE state=0 LIMIT ?,20", page*20);
     }
     
     public Sheep findById(Long id)

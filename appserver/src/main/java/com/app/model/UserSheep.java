@@ -64,5 +64,10 @@ public class UserSheep extends Model<UserSheep>
     {
         return findFirst("SELECT * FROM `usersheep` WHERE uid=? and paystatus=0", uid);
     }
+    
+    public int getUserSheepNum()
+    {
+    	return Db.queryInt("select count(*) from usersheep");
+    }
 	
 }

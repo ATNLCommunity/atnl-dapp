@@ -26,7 +26,15 @@ public class SheepController extends BaseController
 	 */
 	public void getSheeps()
 	{
-		int page = getParaToInt("page");
+		int page = getParaToInt("page",0);
+		if(page <= 0)
+		{
+			page = 0;
+		}
+		else
+		{
+			page = page -1;
+		}
         success(new Sheep().list(page));
 	}
 	

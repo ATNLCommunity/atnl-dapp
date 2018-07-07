@@ -56,4 +56,12 @@ public class UserSheepController extends BaseController
         success(UserSheep.dao.getUserSheeps(uid));
 	}
 	
+	/***
+	 * 参与人数
+	 */
+	public void getUserSheepNum()
+	{
+		success(UserSheep.dao.getUserSheepNum());
+	}
+	
 }
