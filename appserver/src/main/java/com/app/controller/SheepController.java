@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import com.app.model.AtnlAddRecord;
 import com.app.model.BasicRecord;
@@ -13,6 +14,7 @@ import com.app.model.EventRecord;
 import com.app.model.GpsRecord;
 import com.app.model.Sheep;
 import com.app.model.StepRecord;
+import com.app.model.UserSheep;
 
 import n.fw.base.BaseController;
 import n.fw.utils.DateUtils;
@@ -66,21 +68,53 @@ public class SheepController extends BaseController
         map.put("info", sheep);
         map.put("br", br);
         map.put("aar", aar);
+        Double sumatnl = 0d;
         if(null != aar)
         {
-        	map.put("sumatnl", aar.getAtnlSum(sheepid));
+        	sumatnl = aar.getAtnlSum(sheepid);
+        	if(aar.getAtnlDay() == 0 && aar.getAtnlNumDay()  < 3)
+        	{
+        		this.addAAR(sheepid, 0,sumatnl,aar);
+        	}
         }
         else
         {
-        	map.put("sumatnl", 0);
-        	AtnlAddRecord.dao.create(sheepid, (float)Math.random()*100);
+        	this.addAAR(sheepid, 1,sumatnl,null);
         }
+        map.put("sumatnl", sumatnl);
         map.put("dr", dr);
         map.put("gr", gr);
         map.put("er", er);  
         map.put("sr", sr);
         
         success(map);
+	}
+	
+	private void addAAR(Long sheepid,int type,Double sumatnl,AtnlAddRecord aar)
+	{			
+		if(1 == type)
+		{
+			@SuppressWarnings("deprecation")
+			int days = DateUtils.differentDaysByMillisecond(new Date(), new Date(Sheep.dao.findById(sheepid).getStr(Sheep.PREKILLTIME)));
+			AtnlAddRecord.dao.create(sheepid, (float)(new Random().nextInt(2000/days) + 1));
+		}
+		else
+		{
+			int usnum = UserSheep.dao.getUserSheepNum();
+			int addnum = AtnlAddRecord.dao.getSheepNum();
+			if(addnum*2 <= usnum)
+			{
+				@SuppressWarnings("deprecation")
+				int days = DateUtils.differentDaysByMillisecond( new Date(aar.getStr(AtnlAddRecord.RECORDTIME)),new Date(Sheep.dao.findById(sheepid).getStr(Sheep.PREKILLTIME)));
+				AtnlAddRecord.dao.create(sheepid, (float)(new Random().nextInt(2000/days) + 1));
+			}
+			else
+			{
+				AtnlAddRecord.dao.create(sheepid, 0l);
+			}
+			
+		}
+		
 	}
 	
 	/**
