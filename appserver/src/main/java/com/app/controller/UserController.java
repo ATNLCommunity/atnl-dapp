@@ -6,6 +6,7 @@ import com.app.model.Addr;
 import com.app.model.Invite;
 import com.app.model.PreSell;
 import com.app.model.Quan;
+import com.app.model.SmsCode;
 import com.app.model.User;
 
 import org.apache.commons.lang3.StringUtils;
@@ -68,12 +69,45 @@ public class UserController extends BaseController {
 
 		String code = CacheUtils.rand();
 		JSONObject json = new JSONObject();
+		//json.put("product", "阿图纳拉牧业APP");
+		json.put("code", code);
+
+		SmsUtils.sendSms("SMS_132240021", phone, json);
+		CacheUtils.instance.set("sms_" + phone, code);
+		success();
+	}
+
+	public void ttscode()
+	{
+		String phone = getPara("phone", "");
+		if (StringUtils.isBlank(phone) || phone.length() != 11)
+		{
+			error("电话号码格式不对");
+			return;
+		}
+
+		User user = User.dao.findByPhone(phone);
+		if (user != null) {
+			error("用户已存在");
+			return;
+		}
+
+		SmsCode sms = SmsCode.dao.findByPhone(phone);
+		if (sms != null && sms.getInt(SmsCode.COUNT) >= 5)
+		{
+			error("您已多次申请验证码，请联系客户");
+			return;
+		}
+
+		String code = CacheUtils.rand();
+		JSONObject json = new JSONObject();
 		json.put("product", "阿图纳拉牧业APP");
 		json.put("code", code);
 
+		SmsCode.dao.increase(phone);
 		//SmsUtils.sendSms("SMS_132240021", phone, json);
 		SmsUtils.singleCallByTts("TTS_134155538", phone, json);
-		CacheUtils.instance.set("sms_" + phone, code);
+		CacheUtils.instance.set("tts_" + phone, code);
 		success();
 	}
 
@@ -91,13 +125,13 @@ public class UserController extends BaseController {
 			return;
 		}
 
-		String smscode = CacheUtils.instance.get("sms_" + phone);
+		String smscode = CacheUtils.instance.get("tts_" + phone);
 		if (smscode == null || !StringUtils.equals(code, smscode))
 		{
 			error("验证码错误");
 			return;
 		}
-		CacheUtils.instance.set("sms_" + phone, null);
+		CacheUtils.instance.set("tts_" + phone, null);
 
 		Invite invite = Invite.dao.get();
 		Integer count = invite.getInt(Invite.COUNT);

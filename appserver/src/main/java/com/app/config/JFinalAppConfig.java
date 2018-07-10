@@ -29,6 +29,7 @@ import com.app.model.PreSell;
 import com.app.model.Product;
 import com.app.model.Quan;
 import com.app.model.Sheep;
+import com.app.model.SmsCode;
 import com.app.model.Step;
 import com.app.model.StepRecord;
 import com.app.model.User;
@@ -117,6 +118,7 @@ public class JFinalAppConfig extends JFinalConfig {
         arp.addMapping("steprecord", StepRecord.class);
         arp.addMapping("eventrecord", EventRecord.class);
         arp.addMapping("notice", Notice.class);
+        arp.addMapping("smscode", SmsCode.class);
     }
 
     @Override

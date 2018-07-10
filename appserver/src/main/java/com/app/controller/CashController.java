@@ -39,7 +39,8 @@ public class CashController extends BaseController
 		json.put("code", code);
 
 		// SmsUtils.singleCallByTts("TTS_134317301", phone, json);
-		SmsUtils.singleCallByTts("TTS_133974695", phone, json);
+        //SmsUtils.singleCallByTts("TTS_133974695", phone, json);
+        SmsUtils.sendSms("SMS_132240021", phone, json);
 		CacheUtils.instance.set("sms_" + phone, code);
 		success();
 	}
