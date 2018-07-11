@@ -3,5 +3,6 @@
 /appserver/.settings
 /appserver/.classpath
 WXPayConfigImpl.java
+WXPayAppConfigImpl.java
 AlipayConfig.java
 config.properties
