@@ -29,6 +29,8 @@ public class Product extends Model<Product>
     public static final String URL = "url";
     public static final String YF = "yf";
     public static final String EXPIRE_TIME = "expire_time";
+    public static final String SEND_DATE_DESC = "send_date_desc";
+    public static final String SENDBY = "sendby";
 
     public Product create(Float oprice, Float price, Float eth, Float atnl, Float gift, Integer count, Integer type, String name, String logo, String detail, String url, String sendDate, String expireTime)
     {
