@@ -5,6 +5,7 @@ import com.alibaba.druid.wall.WallFilter;
 import com.app.controller.AlipayController;
 import com.app.controller.CashController;
 import com.app.controller.LookController;
+import com.app.controller.NoticeController;
 import com.app.controller.OrderController;
 import com.app.controller.ProductController;
 import com.app.controller.QuanController;
@@ -22,11 +23,13 @@ import com.app.model.EventRecord;
 import com.app.model.Gps;
 import com.app.model.GpsRecord;
 import com.app.model.Invite;
+import com.app.model.Notice;
 import com.app.model.Order;
 import com.app.model.PreSell;
 import com.app.model.Product;
 import com.app.model.Quan;
 import com.app.model.Sheep;
+import com.app.model.SmsCode;
 import com.app.model.Step;
 import com.app.model.StepRecord;
 import com.app.model.User;
@@ -71,6 +74,7 @@ public class JFinalAppConfig extends JFinalConfig {
         routes.add("/vote", VoteController.class);
         routes.add("/usersheep", UserSheepController.class);
         routes.add("/sheep", SheepController.class);
+        routes.add("/notice", NoticeController.class);
     }
 
     @Override
@@ -113,6 +117,8 @@ public class JFinalAppConfig extends JFinalConfig {
         arp.addMapping("gpsrecord", GpsRecord.class);
         arp.addMapping("steprecord", StepRecord.class);
         arp.addMapping("eventrecord", EventRecord.class);
+        arp.addMapping("notice", Notice.class);
+        arp.addMapping("smscode", SmsCode.class);
     }
 
     @Override

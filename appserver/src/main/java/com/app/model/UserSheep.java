@@ -2,6 +2,7 @@ package com.app.model;
 
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 
 import n.fw.utils.DateUtils;
@@ -44,14 +45,29 @@ public class UserSheep extends Model<UserSheep>
         return null;
     }
 
-    public List<UserSheep> getUserSheeps(Long uid)
+    public List<Object> getUserSheeps(Long uid)
     {
-        return find("SELECT * FROM `usersheep` WHERE uid=? ", uid);
+        return Db.query("SELECT * FROM `usersheep` as a left join sheep as b on a.sheepid = b.id WHERE a.uid=? ", uid);
     }
 
     public UserSheep findByOid(Long oid)
     {
         return findFirst("SELECT * FROM `usersheep` WHERE id=?", oid);
+    }
+    
+    public UserSheep findBySid(Long sheepid)
+    {
+        return findFirst("SELECT * FROM `usersheep` WHERE sheepid=?", sheepid);
+    }
+
+    public UserSheep findByUid(Long uid)
+    {
+        return findFirst("SELECT * FROM `usersheep` WHERE uid=? and paystatus=0", uid);
+    }
+    
+    public int getUserSheepNum()
+    {
+    	return Db.queryInt("select count(*) from usersheep");
     }
 	
 }

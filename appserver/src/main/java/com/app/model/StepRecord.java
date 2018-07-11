@@ -22,7 +22,7 @@ public class StepRecord extends Model<StepRecord> {
     public static final String RECORDTIME = "recordtime";
     public static final String STEPS = "steps";
 	
-    public StepRecord getLeastRecord(int sheepid)
+    public StepRecord getLeastRecord(Long sheepid)
     {
     	return findFirst("SELECT * FROM steprecord WHERE sheepid=? ORDER BY id DESC limit 1", sheepid);
     }
@@ -47,7 +47,7 @@ public class StepRecord extends Model<StepRecord> {
     	Date mdate = DateUtils.parseDate(date);
     	Calendar cal = Calendar.getInstance();
         cal.setTime(mdate);
-    	return Db.query("SELECT sheepid,concat(YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as ymd,concat(sheepid,'-',YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as "
-    			+ "symd ,SUM(steps) as distance FROM steprecord GROUP BY symd HAVING symd=?",sheepid+"-"+cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DAY_OF_MONTH));
+    	return Db.query("SELECT sheepid,concat(sheepid,'-',YEAR(recordtime),'-',MONTH(recordtime)) as sym,concat(YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as ymd,concat(sheepid,'-',YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as "
+    			+ "symd ,SUM(steps) as distance FROM steprecord GROUP BY symd HAVING sym=?",sheepid+"-"+cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1));
     }
 }
