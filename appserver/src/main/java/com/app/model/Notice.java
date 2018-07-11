@@ -23,6 +23,10 @@ public class Notice extends Model<Notice>
     
     public List<Notice> list(int page)
     {
-    	return find("select * from notice limit ?,20",page*20);
+    	return find("select * from notice order by id desc limit ?,20",page*20);
+    }
+    public Notice getByNid(Long nid)
+    {
+    	return findFirst("select * from notice where id = ?",nid);
     }
 }

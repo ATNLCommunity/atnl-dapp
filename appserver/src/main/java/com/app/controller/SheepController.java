@@ -95,7 +95,7 @@ public class SheepController extends BaseController
 		if(1 == type)
 		{
 			@SuppressWarnings("deprecation")
-			int days = DateUtils.differentDaysByMillisecond(new Date(), new Date(Sheep.dao.findById(sheepid).getStr(Sheep.PREKILLTIME)));
+			int days = DateUtils.differentDaysByMillisecond(new Date(), new Date(Sheep.dao.findById(sheepid).getStr(Sheep.PREKILLTIME)));			
 			AtnlAddRecord.dao.create(sheepid, (float)(new Random().nextInt(2000/days) + 1));
 		}
 		else

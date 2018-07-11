@@ -24,4 +24,13 @@ public class NoticeController extends BaseController
 		success(Notice.dao.list(page));
 	}
 	
+	/**
+	 * 显示单条详情
+	 */
+	public void getNoticeContent()
+	{
+		Long nid = getParaToLong("nid", 0l);
+		
+		success(Notice.dao.getByNid(nid));
+	}
 }

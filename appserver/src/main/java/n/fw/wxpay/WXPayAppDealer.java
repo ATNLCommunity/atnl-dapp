@@ -14,7 +14,7 @@ import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.jfinal.log.Log4jLog;
 
-//import n.fw.utils.MD5Util;
+import n.fw.utils.MD5Util;
 import net.sf.json.JSONObject;
 
 public class WXPayAppDealer
@@ -111,7 +111,7 @@ public class WXPayAppDealer
             }
         }
         sb.append("key=" + mConfig.getKey());//最后加密时添加商户密钥，由于key值放在最后，所以不用添加到SortMap里面去，单独处理，编码方式采用UTF-8
-        String sign = ""; // MD5Util.MD5Encode(sb.toString(), characterEncoding).toUpperCase();
+        String sign = MD5Util.MD5Encode(sb.toString(), characterEncoding).toUpperCase();
         return sign;
     }
 
@@ -121,7 +121,7 @@ public class WXPayAppDealer
     	String signstr= "appid=wxbc9ce0692eff95a2&noncestr="+nonce+"&package=Sign=WXPay&partnerid=1508784811&prepayid="+prepayId+"&timestamp="+time+"&key=atunalabkl1860924atunalaatunalaa";
     	Logger.getLogger("").error("signstr:"+signstr);
     	
-    	String sign = ""; //MD5Util.MD5Encode(signstr, "UTF-8").toUpperCase();
+    	String sign = MD5Util.MD5Encode(signstr, "UTF-8").toUpperCase();
         return sign;
     	/**SortedMap<String, String> signParams = new TreeMap<String, String>();
         signParams.put("appid", mConfig.getAppID());

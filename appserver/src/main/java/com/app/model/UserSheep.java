@@ -67,7 +67,7 @@ public class UserSheep extends Model<UserSheep>
     
     public int getUserSheepNum()
     {
-    	return Db.queryInt("select count(*) from usersheep");
+    	return Db.queryNumber("select count(*) from usersheep").intValue();
     }
 	
 }

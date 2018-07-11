@@ -61,7 +61,7 @@ public class AtnlAddRecord extends Model<AtnlAddRecord> {
     
     public int getAtnlNumDay()
     {
-    	return Db.queryInt("select count(*) from atnladdrecord where DATEDIFF(recordtime,now()) = 0");
+    	return Db.queryNumber("select count(*) from atnladdrecord where DATEDIFF(recordtime,now()) = 0").intValue();
     }
     
     public Double getAtnlDay()
@@ -69,10 +69,10 @@ public class AtnlAddRecord extends Model<AtnlAddRecord> {
     	return Db.queryDouble("select sum(atnladd) from atnladdrecord where DATEDIFF(recordtime,now()) = 0");
     }
     /**
-     * µ±ÌìÖÐ½±µÄÈËÊý
+     * å½“å¤©ä¸­å¥–çš„äººæ•°
      */
     public int getSheepNum()
     {
-    	return Db.queryInt("select count(*) from atnladdrecord where DATEDIFF(recordtime,now()) = 0 and atnladd > 0");
+    	return Db.queryNumber("select count(*) from atnladdrecord where DATEDIFF(recordtime,now()) = 0 and atnladd > 0").intValue();
     }
 }

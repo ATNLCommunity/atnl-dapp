@@ -157,7 +157,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
     }
 
     /**
-     * Í¨¹ıÊ±¼äÃëºÁÃëÊıÅĞ¶ÏÁ½¸öÊ±¼äµÄ¼ä¸ô
+     * é€šè¿‡æ—¶é—´ç§’æ¯«ç§’æ•°åˆ¤æ–­ä¸¤ä¸ªæ—¶é—´çš„é—´éš”
      * @param date1
      * @param date2
      * @return

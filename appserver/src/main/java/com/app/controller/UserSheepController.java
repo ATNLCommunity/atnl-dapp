@@ -61,7 +61,8 @@ public class UserSheepController extends BaseController
 	 */
 	public void getUserSheepNum()
 	{
-		success(UserSheep.dao.getUserSheepNum());
+		//基数为511
+		success(511 + UserSheep.dao.getUserSheepNum());
 	}
 	
 }
