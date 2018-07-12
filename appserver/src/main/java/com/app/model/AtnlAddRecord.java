@@ -59,14 +59,14 @@ public class AtnlAddRecord extends Model<AtnlAddRecord> {
     			+ "ON a.sheepid= d.id GROUP BY a.sheepid ORDER BY atnladd DESC LIMIT 20");
     }
     
-    public int getAtnlNumDay()
+    public int getAtnlNumDay(Long sheepid)
     {
-    	return Db.queryNumber("select count(*) from atnladdrecord where DATEDIFF(recordtime,now()) = 0").intValue();
+    	return Db.queryNumber("select count(*) from atnladdrecord where DATEDIFF(recordtime,now()) = 0 and sheepid =?",sheepid).intValue();
     }
     
-    public Double getAtnlDay()
+    public AtnlAddRecord getAtnlDay(Long sheepid)
     {
-    	return Db.queryDouble("select sum(atnladd) from atnladdrecord where DATEDIFF(recordtime,now()) = 0");
+    	return findFirst("select * from atnladdrecord where DATEDIFF(recordtime,now()) = 0 and sheepid =? and atnladd > 0",sheepid);
     }
     /**
      * 当天中奖的人数

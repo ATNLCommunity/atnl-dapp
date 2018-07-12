@@ -1,6 +1,7 @@
 package com.app.controller;
 
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class SheepController extends BaseController
         if(null != aar)
         {
         	sumatnl = aar.getAtnlSum(sheepid);
-        	if(aar.getAtnlDay() == 0 && aar.getAtnlNumDay()  < 3)
+        	if(aar.getAtnlDay(sheepid) == null && aar.getAtnlNumDay(sheepid)  < 3)
         	{
         		this.addAAR(sheepid, 0,sumatnl,aar);
         	}
@@ -95,7 +96,9 @@ public class SheepController extends BaseController
 		if(1 == type)
 		{
 			int days = DateUtils.differentDaysByMillisecond(new Date(), Sheep.dao.findById(sheepid).getDate(Sheep.PREKILLTIME));			
-			AtnlAddRecord.dao.create(sheepid, (float)(new Random().nextInt(2000/days) + 1));
+			BigDecimal   b  =   new  BigDecimal((float)(new Random().nextInt(2000/days) + 1));  
+			float   f1   =  b.setScale(2,  BigDecimal.ROUND_HALF_UP).floatValue();  
+			AtnlAddRecord.dao.create(sheepid, f1);
 		}
 		else
 		{
@@ -104,7 +107,9 @@ public class SheepController extends BaseController
 			if(addnum*2 <= usnum)
 			{
 				int days = DateUtils.differentDaysByMillisecond(aar.getDate(AtnlAddRecord.RECORDTIME),Sheep.dao.findById(sheepid).getDate(Sheep.PREKILLTIME));
-				AtnlAddRecord.dao.create(sheepid, (float)(new Random().nextInt(2000/days) + 1));
+				BigDecimal   b  =   new  BigDecimal((float)(new Random().nextInt(2000/days) + 1));  
+				float   f1   =  b.setScale(2,  BigDecimal.ROUND_HALF_UP).floatValue(); 
+				AtnlAddRecord.dao.create(sheepid, f1);
 			}
 			else
 			{
