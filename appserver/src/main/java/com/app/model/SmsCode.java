@@ -11,14 +11,15 @@ public class SmsCode extends Model<SmsCode>
     
     public final static String PHONE = "phone";
     public final static String COUNT = "count";
+    public final static String TYPE = "type";
 
-    public SmsCode findByPhone(String phone)
+    public SmsCode findByPhone(String phone, int type)
     {
-        return findFirst("SELECT * FROM smscode WHERE phone=? LIMIT 1", phone);
+        return findFirst("SELECT * FROM smscode WHERE phone=? AND type=? LIMIT 1", phone, type);
     }
 
-    public void increase(String phone)
+    public void increase(String phone, int type)
     {
-        Db.update("INSERT INTO smscode(phone,count) VALUES(?,1) ON DUPLICATE KEY UPDATE count=count+1", phone);
+        Db.update("INSERT INTO smscode(phone,type, count) VALUES(?,?,1) ON DUPLICATE KEY UPDATE count=count+1", phone, type);
     }
 }

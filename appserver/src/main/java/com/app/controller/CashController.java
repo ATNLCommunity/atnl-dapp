@@ -1,5 +1,6 @@
 package com.app.controller;
 
+import com.app.model.SmsCode;
 import com.app.model.User;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +33,16 @@ public class CashController extends BaseController
 		{
 			error("电话号码格式不对");
 			return;
+        }
+        
+        SmsCode sms = SmsCode.dao.findByPhone(phone, 2);
+		if (sms != null && sms.getInt(SmsCode.COUNT) >= 5)
+		{
+			error("您已多次申请验证码，请联系客户");
+			return;
 		}
+
+		SmsCode.dao.increase(phone, 2);
 
 		String code = CacheUtils.rand();
 		JSONObject json = new JSONObject();

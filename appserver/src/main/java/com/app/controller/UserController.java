@@ -67,6 +67,15 @@ public class UserController extends BaseController {
 			return;
 		}
 
+		SmsCode sms = SmsCode.dao.findByPhone(phone, 1);
+		if (sms != null && sms.getInt(SmsCode.COUNT) >= 5)
+		{
+			error("您已多次申请验证码，请联系客户");
+			return;
+		}
+
+		SmsCode.dao.increase(phone, 1);
+
 		String code = CacheUtils.rand();
 		JSONObject json = new JSONObject();
 		//json.put("product", "阿图纳拉牧业APP");
@@ -92,7 +101,7 @@ public class UserController extends BaseController {
 			return;
 		}
 
-		SmsCode sms = SmsCode.dao.findByPhone(phone);
+		SmsCode sms = SmsCode.dao.findByPhone(phone, 0);
 		if (sms != null && sms.getInt(SmsCode.COUNT) >= 5)
 		{
 			error("您已多次申请验证码，请联系客户");
@@ -104,7 +113,7 @@ public class UserController extends BaseController {
 		json.put("product", "阿图纳拉牧业APP");
 		json.put("code", code);
 
-		SmsCode.dao.increase(phone);
+		SmsCode.dao.increase(phone, 0);
 		//SmsUtils.sendSms("SMS_132240021", phone, json);
 		SmsUtils.singleCallByTts("TTS_134155538", phone, json);
 		CacheUtils.instance.set("tts_" + phone, code);
