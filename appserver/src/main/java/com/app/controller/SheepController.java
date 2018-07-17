@@ -15,6 +15,7 @@ import com.app.model.EventRecord;
 import com.app.model.GpsRecord;
 import com.app.model.Sheep;
 import com.app.model.StepRecord;
+import com.app.model.User;
 import com.app.model.UserSheep;
 
 import n.fw.base.BaseController;
@@ -70,18 +71,29 @@ public class SheepController extends BaseController
         map.put("br", br);
         map.put("aar", aar);
         Double sumatnl = 0d;
+        float aarf = 0f;
         if(null != aar)
         {
         	sumatnl = aar.getAtnlSum(sheepid);
         	if(aar.getAtnlDay(sheepid) == null && aar.getAtnlNumDay(sheepid)  < 3)
         	{
-        		this.addAAR(sheepid, 0,sumatnl,aar);
+        		aarf = this.addAAR(sheepid, 0,sumatnl,aar);
         	}
         }
         else
         {
-        	this.addAAR(sheepid, 1,sumatnl,null);
+        	aarf = this.addAAR(sheepid, 1,sumatnl,null);
         }
+        if(aarf > 0)
+        {
+        	User user = User.dao.findByUid(uid);
+            if (user != null)
+            {
+                user.set(User.ATNL, user.getFloat(User.ATNL) + aarf);
+                user.update();
+            }
+        }
+        sumatnl = aar.getAtnlSum(sheepid);
         map.put("sumatnl", sumatnl);
         map.put("dr", dr);
         map.put("gr", gr);
@@ -91,25 +103,28 @@ public class SheepController extends BaseController
         success(map);
 	}
 	
-	private void addAAR(Long sheepid,int type,Double sumatnl,AtnlAddRecord aar)
+	private float addAAR(Long sheepid,int type,Double sumatnl,AtnlAddRecord aar)
 	{			
 		if(1 == type)
 		{
 			int days = DateUtils.differentDaysByMillisecond(new Date(), Sheep.dao.findById(sheepid).getDate(Sheep.PREKILLTIME));			
-			BigDecimal   b  =   new  BigDecimal((float)(new Random().nextInt(2000/days) + 1));  
-			float   f1   =  b.setScale(2,  BigDecimal.ROUND_HALF_UP).floatValue();  
+			BigDecimal b = new  BigDecimal((float)(new Random().nextInt(1500/days) + 1));  
+			float f1 = b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue()+500;  
 			AtnlAddRecord.dao.create(sheepid, f1);
+			return f1;
 		}
 		else
 		{
 			int usnum = UserSheep.dao.getUserSheepNum();
 			int addnum = AtnlAddRecord.dao.getSheepNum();
-			if(addnum*2 <= usnum)
+			if(addnum*2 <= usnum && new Random().nextInt(2) == 1)
 			{
 				int days = DateUtils.differentDaysByMillisecond(aar.getDate(AtnlAddRecord.RECORDTIME),Sheep.dao.findById(sheepid).getDate(Sheep.PREKILLTIME));
-				BigDecimal   b  =   new  BigDecimal((float)(new Random().nextInt(2000/days) + 1));  
-				float   f1   =  b.setScale(2,  BigDecimal.ROUND_HALF_UP).floatValue(); 
+				int sa = (int) Math.ceil(sumatnl);
+				BigDecimal b = new  BigDecimal((float)(new Random().nextInt((1500-sa)/days) + 1));  
+				float f1 = b.setScale(2,BigDecimal.ROUND_HALF_UP).floatValue(); 
 				AtnlAddRecord.dao.create(sheepid, f1);
+				return f1;
 			}
 			else
 			{
@@ -117,6 +132,7 @@ public class SheepController extends BaseController
 			}
 			
 		}
+		return 0f;
 		
 	}
 	
