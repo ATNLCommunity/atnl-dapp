@@ -14,6 +14,11 @@ public class CashController extends BaseController
 {
     public void smscode()
 	{
+        success();
+    }
+
+    public void smscode1728()
+    {
         Long uid = getUid();
         if (uid == 0)
         {

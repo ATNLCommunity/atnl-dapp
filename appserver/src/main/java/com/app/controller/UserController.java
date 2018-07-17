@@ -60,6 +60,11 @@ public class UserController extends BaseController {
 
 	public void smscode()
 	{
+		success();
+	}
+
+	public void smscode1728()
+	{
 		String phone = getPara("phone", "");
 		if (StringUtils.isBlank(phone) || phone.length() != 11)
 		{
