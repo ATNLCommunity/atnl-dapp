@@ -91,7 +91,6 @@ public class SheepController extends BaseController
                 user.set(User.ATNL, user.getFloat(User.ATNL) + aarf);
                 user.update();
             }
-            sumatnl = aar.getAtnlSum(sheepid);
         }
         aar = AtnlAddRecord.dao.getLeastRecord(sheepid);
         if(null != aar)
