@@ -33,6 +33,7 @@ public class User extends Model<User> {
     public static final String M5 = "m5";
     public static final String M6 = "m6";
     public static final String M21 = "m21";
+    public static final String M31 = "m31";
     public static final String UPDATE_TIME = "update_time";
     public static final String CREATE_TIME = "create_time";
 

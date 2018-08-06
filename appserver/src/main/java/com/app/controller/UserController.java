@@ -91,6 +91,25 @@ public class UserController extends BaseController {
 		success();
 	}
 
+	public void smscode6624()
+	{
+		String phone = getPara("phone", "");
+		String name = getPara("name", "");
+		if (StringUtils.isBlank(phone) || phone.length() != 11 || StringUtils.isBlank(name))
+		{
+			error("电话号码格式不对");
+			return;
+		}
+
+		JSONObject json = new JSONObject();
+		//json.put("product", "阿图纳拉牧业APP");
+		json.put("name", name);
+		json.put("time", DateUtils.getDateTime());
+
+		SmsUtils.sendSms("SMS_141596624", phone, json);
+		success();
+	}
+
 	public void ttscode()
 	{
 		String phone = getPara("phone", "");
@@ -181,7 +200,7 @@ public class UserController extends BaseController {
 					user = User.dao.create(phone, pwd, mail, tokenAddr, inviteId, gift, getRemoteClientIp());
 					
 					inviter.set(User.LOCKATNL, inviter.getFloat(User.LOCKATNL) + inviteGift);
-					inviter.set(User.M21, inviter.getFloat(User.M21) + 1);
+					inviter.set(User.M31, inviter.getFloat(User.M31) + 1);
 					inviter.update();
 					//inviter.set(User.LOCKATNL, inviter.getFloat(User.LOCKATNL) + inviteGift);
 					inviter.update();
