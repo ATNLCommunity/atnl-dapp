@@ -123,8 +123,8 @@ public class WxController extends BaseController
                                 User user = User.dao.findByUid(order.getLong(Order.UID));
                                 if (user != null)
                                 {
-                                    user.set(User.ATNL, user.getFloat(User.ATNL) + gift);
-                                    user.set(User.LP, user.getFloat(User.LP) + lp);
+                                    user.set(User.ATNL, user.getFloat(User.ATNL) + gift*order.getInt(Order.COUNT));
+                                    user.set(User.LP, user.getFloat(User.LP) + lp*order.getInt(Order.COUNT));
                                     user.update();
                                 }
                             }

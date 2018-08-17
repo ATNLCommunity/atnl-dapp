@@ -113,14 +113,18 @@ public class UserController extends BaseController {
 			return;
 		}
 
-		String code = CacheUtils.rand();
-		JSONObject json = new JSONObject();
-		json.put("product", "阿图纳拉牧业APP");
-		json.put("code", code);
 
 		SmsCode.dao.increase(phone, 0);
+
+		String code = CacheUtils.rand();
+		JSONObject json = new JSONObject();
+		//json.put("product", "阿图纳拉牧业APP");
+		json.put("code", code);
+
+		SmsUtils.sendSms("SMS_132240021", phone, json);
+
 		//SmsUtils.sendSms("SMS_132240021", phone, json);
-		SmsUtils.singleCallByTts("TTS_134155538", phone, json);
+		//SmsUtils.singleCallByTts("TTS_134155538", phone, json);
 		CacheUtils.instance.set("tts_" + phone, code);
 		success();
 	}

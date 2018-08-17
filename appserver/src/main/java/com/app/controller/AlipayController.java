@@ -131,10 +131,8 @@ public class AlipayController extends BaseController {
                                         User user = User.dao.findByUid(order.getLong(Order.UID));
                                         if (user != null)
                                         {
-                                            System.out.print("user atnl : " + user.getFloat(User.ATNL) + " add:" + gift);
-                                            user.set(User.ATNL, user.getFloat(User.ATNL) + gift);
-                                            System.out.print("user lp : " + user.getFloat(User.LP) + " add:" + lp);
-                                            user.set(User.LP, user.getFloat(User.LP) + lp);
+                                            user.set(User.ATNL, user.getFloat(User.ATNL) + gift*order.getInt(Order.COUNT));
+                                            user.set(User.LP, user.getFloat(User.LP) + lp*order.getInt(Order.COUNT));
                                             user.update();
                                         }
                                     }

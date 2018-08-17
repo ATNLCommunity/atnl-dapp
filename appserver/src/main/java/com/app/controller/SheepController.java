@@ -68,8 +68,7 @@ public class SheepController extends BaseController
         StepRecord sr = StepRecord.dao.getLeastRecord(sheepid);
         HashMap<String, Object> map = new HashMap<String,Object>();
         map.put("info", sheep);
-        map.put("br", br);
-        map.put("aar", aar);
+        map.put("br", br);       
         Double sumatnl = 0d;
         float aarf = 0f;
         if(null != aar)
@@ -93,7 +92,12 @@ public class SheepController extends BaseController
                 user.update();
             }
         }
-        sumatnl = aar.getAtnlSum(sheepid);
+        aar = AtnlAddRecord.dao.getLeastRecord(sheepid);
+        if(null != aar)
+        {
+        	sumatnl = aar.getAtnlSum(sheepid);
+        }
+        map.put("aar", aar);
         map.put("sumatnl", sumatnl);
         map.put("dr", dr);
         map.put("gr", gr);

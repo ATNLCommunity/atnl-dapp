@@ -19,6 +19,7 @@ public class Device extends Model<Device>
     public static final String DETAIL = "detail";
     public static final String POWER = "power";
     public static final String UPDATE_TIME = "update_time";
+    public static final String BINDSTATE = "bindstate";
 
     public Device create(String name, String bindcode, String detail) 
     {
@@ -27,6 +28,7 @@ public class Device extends Model<Device>
         device.set(BINDCODE, bindcode);
         device.set(BINDTIME, DateUtils.getDateTime());
         device.set(DETAIL, detail);
+        device.set(BINDSTATE, 0);
 
         if (device.save())
         {
