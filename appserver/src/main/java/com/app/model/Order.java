@@ -2,6 +2,7 @@ package com.app.model;
 
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 
 import n.fw.utils.DateUtils;
@@ -84,5 +85,14 @@ public class Order extends Model<Order>
     public Order findByOid(Long oid)
     {
         return findFirst("SELECT * FROM `order` WHERE id=? LIMIT 1", oid);
+    }
+    
+    /**
+     * 万羊活动订单统计
+     * @return
+     */
+    public int getOrderCount()
+    {
+    	return Db.queryLong("SELECT count(*) FROM `order` WHERE pid=39 and paystate = 1 and pay_time > '2018-08-19'").intValue();
     }
 }
