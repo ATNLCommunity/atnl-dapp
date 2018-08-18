@@ -93,6 +93,6 @@ public class Order extends Model<Order>
      */
     public int getOrderCount()
     {
-    	return Db.queryLong("SELECT count(*) FROM `order` WHERE pid=39 and paystate = 1 and pay_time > '2018-08-19'").intValue();
+    	return Db.queryLong("SELECT count(*) FROM `order` WHERE pid=42 and paystate = 1 and pay_time > '2018-08-19'").intValue();
     }
 }
