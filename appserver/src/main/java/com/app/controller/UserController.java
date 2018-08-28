@@ -1,19 +1,25 @@
 package com.app.controller;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
+import com.app.config.Constants;
 import com.app.model.Addr;
 import com.app.model.Invite;
 import com.app.model.PreSell;
 import com.app.model.Quan;
 import com.app.model.SmsCode;
 import com.app.model.User;
+import com.github.cage.Cage;
+import com.github.cage.GCage;
 
 import org.apache.commons.lang3.StringUtils;
 
 import n.fw.base.BaseController;
 import n.fw.utils.CacheUtils;
 import n.fw.utils.DateUtils;
+import n.fw.utils.MD5Util;
 import n.fw.utils.SmsUtils;
 import net.sf.json.JSONObject;
 
@@ -447,5 +453,30 @@ public class UserController extends BaseController {
         {
             reward(inviteid, atnl / 2, idx + 1, start, depth);
         }
-    }
+	}
+	
+	public void codeimg() {
+		String phone = getPara("phone", "");
+		if (StringUtils.isBlank(phone) || phone.length() != 11)
+		{
+			error("电话号码格式不对");
+			return;
+		}
+		
+		Cage cage = new GCage();
+		String code = CacheUtils.rand();
+		CacheUtils.instance.set("tts_" + phone, code);
+		String fileName =  CacheUtils.rand() + "_" + System.currentTimeMillis();
+		OutputStream os = null;
+		try {
+			os = new FileOutputStream(Constants.UPLOAD_DIR + fileName + ".jpg", false);
+			cage.draw(code, os);
+			os.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		} 
+		success(fileName + ".jpg");
+	}
 }
