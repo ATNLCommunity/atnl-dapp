@@ -467,9 +467,8 @@ public class UserController extends BaseController {
 		String code = CacheUtils.rand();
 		CacheUtils.instance.set("tts_" + phone, code);
 		String fileName =  CacheUtils.rand() + "_" + System.currentTimeMillis();
-		OutputStream os = null;
 		try {
-			os = new FileOutputStream(Constants.UPLOAD_DIR + fileName + ".jpg", false);
+			OutputStream os = new FileOutputStream(Constants.UPLOAD_DIR + fileName + ".jpg", false);
 			cage.draw(code, os);
 			os.close();
 		}
