@@ -410,4 +410,12 @@ public class OrderController extends BaseController
        
         success(order);
     }
+    
+    /**
+     * 参与万人买羊人数
+     */
+    public void aSheepNum()
+    {
+    	success(Order.dao.getOrderCount());
+    }
 }
