@@ -33,7 +33,8 @@ public class SmsUtils
     static final String accessKeySecret = "aKQH11C6X860fhY2YjWLKge4yo4lzX";
 
     public static SendSmsResponse sendSms(String tmp, String phone, Object content) {
-
+        return null;
+        /*
         //可自助调整超时时间
         try {
             System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
@@ -64,23 +65,19 @@ public class SmsUtils
     
             //hint 此处可能会抛出异常，注意catch
             SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-
-            /*
-            JSONObject json = new JSONObject();
-            json.put("content", content);
-            json.put("ret", sendSmsResponse);
-            System.out.println(json.toString());
-            */
             return sendSmsResponse;   
         } catch (Exception e) {
             //TODO: handle exception
             e.printStackTrace();
             return null;
         }
+        */
     }
 
     public static SingleCallByTtsResponse singleCallByTts(String tmp, String phone, Object content)
     {
+        return null;
+        /*
         try
         {
             //可自助调整超时时间
@@ -125,9 +122,12 @@ public class SmsUtils
             e.printStackTrace();
             return null;
         }
+        */
     }
 
     public static QuerySendDetailsResponse querySendDetails(String bizId) {
+        return null;
+        /*
         try {
             //可自助调整超时时间
             System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
@@ -161,5 +161,6 @@ public class SmsUtils
             e.printStackTrace();
             return null;
         }
+        */
     }
 }
