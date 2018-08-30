@@ -96,13 +96,15 @@ public class CashController extends BaseController
 			return;
 		}
 
-        String smscode = CacheUtils.instance.get("sms_" + phone);
+        //String smscode = CacheUtils.instance.get("sms_" + phone);
+        String smscode = CacheUtils.instance.get("tts_" + phone);
 		if (smscode == null || !StringUtils.equals(code, smscode))
 		{
 			error("验证码错误");
 			return;
 		}
-		CacheUtils.instance.set("sms_" + phone, null);
+		// CacheUtils.instance.set("sms_" + phone, null);
+		CacheUtils.instance.set("tts_" + phone, null);
         
         float atnl = user.getFloat(User.ATNL);
         float needatnl = user.getFloat(User.NEEDATNL);
