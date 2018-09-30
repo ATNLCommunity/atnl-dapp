@@ -2,11 +2,15 @@ package com.app.controller;
 
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import org.spongycastle.util.encoders.Base64;
 
 import com.app.model.AtnlAddRecord;
 import com.app.model.BasicRecord;
@@ -18,8 +22,22 @@ import com.app.model.StepRecord;
 import com.app.model.User;
 import com.app.model.UserSheep;
 
+import io.nebulas.account.AccountManager;
+import io.nebulas.client.NebulasClient;
+import io.nebulas.client.api.request.GetAccountStateRequest;
+import io.nebulas.client.api.request.SendRawTransactionRequest;
+import io.nebulas.client.api.response.AccountState;
+import io.nebulas.client.api.response.RawTransaction;
+import io.nebulas.client.api.response.Response;
+import io.nebulas.client.impl.HttpNebulasClient;
+import io.nebulas.core.Address;
+import io.nebulas.core.Transaction;
+import io.nebulas.core.TransactionBinaryPayload;
 import n.fw.base.BaseController;
 import n.fw.utils.DateUtils;
+import n.fw.utils.FileUtils;
+import net.sf.json.JSONObject;
+
 
 public class SheepController extends BaseController
 {	
@@ -476,4 +494,101 @@ public class SheepController extends BaseController
 	{
 		success(DistanceRecord.dao.getTop20());
 	}
+	
+	/**
+     * 区块链数据上传
+     */
+    public void dataUpload()
+    {
+    	Long sheepid = getParaToLong("sheepid", 0l);
+		if (sheepid <= 0)
+        {
+            error("该羊羔已经不存在了");
+            return;
+        }
+		Sheep sheep = Sheep.dao.findById(sheepid);
+		if(null == sheep)
+		{
+			error("该羊羔已经不存在了");
+            return;
+		}
+		//success(sheep);
+    	AccountManager manager;
+		try {
+			manager = new AccountManager();
+		
+	    	byte[] passphrase = "atnl123".getBytes();
+	        // binary tx
+	        int chainID = 1001; //1 mainet,1001 testnet, 100 default private
+	        Address from;
+	        Address to;
+	        byte[] walletFile = "{\"version\":4,\"id\":\"56e8fc70-f676-4c8d-91a2-b19e49a6dc2b\",\"address\":\"n1bHcQ4UCeQb4JbsDDhKtHwwcXLKCCCWXDk\",\"crypto\":{\"ciphertext\":\"f12c2a7b41b40b63189f247e8b0b63932d2867f06eb1e758561ce597b0b2d2ae\",\"cipherparams\":{\"iv\":\"7a00c94de9adc98064baf78a4d451e2b\"},\"cipher\":\"aes-128-ctr\",\"kdf\":\"scrypt\",\"kdfparams\":{\"dklen\":32,\"salt\":\"7f48eebf5d571c924ff0a2170a3125baefd023c1ba352f9bc4f66b11324e1182\",\"n\":4096,\"r\":8,\"p\":1},\"mac\":\"f5db617f67d74835b82508b7e6cacfa557f2409b012b4fae2f567ca7fad360c9\",\"machash\":\"sha3256\"}}".getBytes();
+	        from = manager.load(walletFile, passphrase);
+	        if("".equals(sheep.getStr(Sheep.ADDRESS)) || null == sheep.getStr(Sheep.ADDRESS))
+	    	{
+	        	to = manager.newAccount(passphrase);
+	        	walletFile = manager.export(from,passphrase);
+	        	FileUtils.writeBytesToFile("/data/keystore/sheep/"+sheepid+".json", walletFile);
+	    		sheep.set(Sheep.KPATH, "/data/keystore/sheep/"+sheepid+".json");
+	    		sheep.set(Sheep.ADDRESS, to.string());
+	    		sheep.update();
+	    	}
+	        else
+	        {
+	        	//walletFile = FileUtils.changeFileToByte(sheep.getStr(Sheep.KPATH));
+	        	//from = manager.load(walletFile, passphrase);
+
+	        	to = Address.ParseFromString(sheep.getStr(Sheep.ADDRESS).toString());
+	        	
+	        }
+	        BigInteger value = new BigInteger("0");
+	        NebulasClient nebulasClient = HttpNebulasClient.create("https://testnet.nebulas.io");
+	        Response<AccountState> accountResponse = nebulasClient.getAccountState(new GetAccountStateRequest("n1bHcQ4UCeQb4JbsDDhKtHwwcXLKCCCWXDk"));        
+	        long nonce = accountResponse.getResult().getNonce() + 1;
+	        Transaction.PayloadType payloadType = Transaction.PayloadType.BINARY;
+	        
+	        Map<String, String> smallMap = new HashMap<String, String>(); 
+	        smallMap.put("出生日期：", sheep.getDate(Sheep.BIRTHDAY)+"");
+	        smallMap.put("源羊编号：", sheep.getStr(Sheep.SID));
+	        BasicRecord br = BasicRecord.dao.getLeastRecord(sheepid);
+	        String height = "";
+	        String weight = ""; 
+	        String recordtime = "";
+	        if(null != br)
+	        {
+	        	height = br.getFloat(BasicRecord.HEIGHT)+"";
+	        	weight = br.getFloat(BasicRecord.WEIGHT)+"";
+	        	recordtime = br.getDate(BasicRecord.RECORDTIME).toString();
+	        }
+	        Long sumSteps = StepRecord.dao.getSum(sheepid);
+	        smallMap.put("1:",height);
+	        smallMap.put("2:", weight); 
+	        smallMap.put("3:",recordtime);
+	        smallMap.put("4:",DateUtils.getDateTime());
+	        smallMap.put("5", sumSteps+"");
+	        String s = "1:"+height+"|"
+	        		+"2:"+weight+"|"
+	        		+"3:"+recordtime+"|"
+	        		+"4:"+DateUtils.getDateTime()//+"|"
+	        		+"当前总活动量:"+sumSteps+"";
+	        JSONObject jsonObject = JSONObject.fromObject(smallMap);
+	        //Logger.getLogger("").error("json:"+jsonObject.toString());
+	        byte[] payload = new TransactionBinaryPayload(s.getBytes()).toBytes();
+	        //payload = new TransactionCallPayload("function", "get").toBytes();
+	        BigInteger gasPrice = new BigInteger("1000000"); // 0 < gasPrice < 10^12
+	        BigInteger gasLimit = new BigInteger("20000"); // 20000 < gasPrice < 50*10^9
+	        Transaction tx = new Transaction(chainID, from, to, value, nonce, payloadType, payload, gasPrice, gasLimit);
+	
+	        manager.signTransaction(tx, passphrase);
+	        byte[] rawData = tx.toProto();
+	        String rawTransaction = Base64.toBase64String(rawData);
+	
+	        Response<RawTransaction> response = nebulasClient.sendRawTransaction(new SendRawTransactionRequest().setData(rawTransaction));
+	        success(response);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
 }

@@ -21,6 +21,8 @@ public class Sheep extends Model<Sheep>
     public static final String HEIGHT = "height";
     public static final String PREKILLTIME = "prekilltime";
     public static final String DID = "did";
+    public static final String KPATH = "kpath";
+    public static final String ADDRESS = "address";
     
     public List<Sheep> getSheep(Integer count)
     {

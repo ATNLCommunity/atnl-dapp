@@ -31,7 +31,8 @@ public class Product extends Model<Product>
     public static final String EXPIRE_TIME = "expire_time";
     public static final String SEND_DATE_DESC = "send_date_desc";
     public static final String SENDBY = "sendby";
-
+    public static final String FROM_TYPE = "from_type"; // 来源类型
+    
     public Product create(Float oprice, Float price, Float eth, Float atnl, Float gift, Integer count, Integer type, String name, String logo, String detail, String url, String sendDate, String expireTime)
     {
         Product product = new Product();
@@ -64,13 +65,13 @@ public class Product extends Model<Product>
         return null;
     }
 
-    public List<Product> getProducts(Integer type)
+    public List<Product> getProducts(Integer type,Integer from_type)
     {
         if (type == -1)
         {
-            return find("SELECT * FROM product WHERE expire_time>=NOW() AND count!=0 ORDER BY id DESC LIMIT 7");
+            return find("SELECT * FROM product WHERE expire_time>=NOW() AND count!=0 and from_type = ? ORDER BY id DESC LIMIT 7",from_type);
         }
-        return find("SELECT * FROM product WHERE type=? AND expire_time>=NOW() AND count!=0 ORDER BY id DESC", type);
+        return find("SELECT * FROM product WHERE type=? AND expire_time>=NOW() AND count!=0 and from_type = ? ORDER BY id DESC", type,from_type);
     }
 
     public Product findProduct(Long pid)

@@ -50,4 +50,14 @@ public class StepRecord extends Model<StepRecord> {
     	return Db.query("SELECT sheepid,concat(sheepid,'-',YEAR(recordtime),'-',MONTH(recordtime)) as sym,concat(YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as ymd,concat(sheepid,'-',YEAR(recordtime),'-',MONTH(recordtime),'-',DAYOFMONTH(recordtime)) as "
     			+ "symd ,SUM(steps) as distance FROM steprecord GROUP BY symd HAVING sym=?",sheepid+"-"+cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1));
     }
+    
+    public Long getSum(Long sheepid)
+    {
+    	Number sum = Db.queryNumber("select sum(steps) from steprecord where sheepid = ?",sheepid);
+    	if(null == sum)
+    	{
+    		return 0l;
+    	}
+    	return sum.longValue();
+    }
 }

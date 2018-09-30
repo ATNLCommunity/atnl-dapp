@@ -99,6 +99,11 @@
       <artifactId>cage</artifactId>
       <version>1.0</version>
     </dependency>
+    <dependency>
+      <groupId>io.nebulas</groupId>
+      <artifactId>nebulas</artifactId>
+    <version>0.2</version>
+	</dependency>
   </dependencies>
   <build>
     <finalName>app</finalName>

@@ -3,6 +3,7 @@ package com.app.config;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallFilter;
 import com.app.controller.AlipayController;
+import com.app.controller.AtnlPayController;
 import com.app.controller.CashController;
 import com.app.controller.LookController;
 import com.app.controller.NoticeController;
@@ -14,12 +15,15 @@ import com.app.controller.UserSheepController;
 import com.app.controller.SheepController;
 import com.app.controller.VoteController;
 import com.app.controller.WxController;
+import com.app.controller.GoodsController;
 import com.app.model.Addr;
 import com.app.model.AtnlAddRecord;
+import com.app.model.AtnlPayRecord;
 import com.app.model.BasicRecord;
 import com.app.model.Device;
 import com.app.model.DistanceRecord;
 import com.app.model.EventRecord;
+import com.app.model.Goods;
 import com.app.model.Gps;
 import com.app.model.GpsRecord;
 import com.app.model.Invite;
@@ -75,6 +79,8 @@ public class JFinalAppConfig extends JFinalConfig {
         routes.add("/usersheep", UserSheepController.class);
         routes.add("/sheep", SheepController.class);
         routes.add("/notice", NoticeController.class);
+        routes.add("/goods", GoodsController.class);
+        routes.add("/atnlpay",AtnlPayController.class);
     }
 
     @Override
@@ -119,6 +125,8 @@ public class JFinalAppConfig extends JFinalConfig {
         arp.addMapping("eventrecord", EventRecord.class);
         arp.addMapping("notice", Notice.class);
         arp.addMapping("smscode", SmsCode.class);
+        arp.addMapping("goods", Goods.class);
+        arp.addMapping("atnlpayrecord", AtnlPayRecord.class);
     }
 
     @Override

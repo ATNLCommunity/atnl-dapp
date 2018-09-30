@@ -13,20 +13,22 @@ public class ProductController extends BaseController
     public void list()
     {
         Integer type = getParaToInt("type", 0);
-        success(Product.dao.getProducts(type));
+        Integer from_type = getParaToInt("from_type", 0);
+        success(Product.dao.getProducts(type,from_type));
     }
 
     public void all()
     {
         Map<String, List<Product>> map = new HashMap<String, List<Product>>();
-        List<Product> type0 = Product.dao.getProducts(0);
-        List<Product> type1 = Product.dao.getProducts(1);
-        List<Product> type2 = Product.dao.getProducts(2);
+        List<Product> type0 = Product.dao.getProducts(0,0);
+        List<Product> type1 = Product.dao.getProducts(1,0);
+        List<Product> type2 = Product.dao.getProducts(2,0);
+        List<Product> type3 = Product.dao.getProducts(-1,1);
 
         map.put("type0", type0);
         map.put("type1", type1);
         map.put("type2", type2);
-
+        map.put("type3", type3);
         success(map);
 
     }

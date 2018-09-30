@@ -60,6 +60,27 @@ public class UserController extends BaseController {
 		}
 
 		setSessionAttr("uid", user.get(User.ID));
+		user.set(User.LOGINTOKEN, getSession().getId());
+		user.update();
+		user.put(User.PWD, null);
+		success(user);
+	}
+	
+	public void tokenLogin()
+	{
+		String token = getPara("token", "");
+		if (StringUtils.isBlank(token)) {
+			errorInvalid();
+			return;
+		}
+		User user = User.dao.findByToken(token);
+		if (user == null) {
+			error("用户不存在");
+			return;
+		}
+		setSessionAttr("uid", user.get(User.ID));
+		user.set(User.LOGINTOKEN, getSession().getId());
+		user.update();
 		user.put(User.PWD, null);
 		success(user);
 	}

@@ -2,6 +2,7 @@ package com.app.model;
 
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 
 import n.fw.utils.DateUtils;
@@ -36,6 +37,8 @@ public class User extends Model<User> {
     public static final String M31 = "m31";
     public static final String UPDATE_TIME = "update_time";
     public static final String CREATE_TIME = "create_time";
+    public static final String UTYPE = "utype";
+    public static final String LOGINTOKEN = "login_token";
 
     public User create(String phone, String pwd, String mail, String tokenaddr, Long inviteid, Float gift, String ip) {
         User user = new User();
@@ -56,6 +59,7 @@ public class User extends Model<User> {
         String time = DateUtils.getDateTime();
         user.set(UPDATE_TIME, time);
         user.set(CREATE_TIME, time);
+        user.set(UTYPE, 0);
         if (user.save()) {
             return user;
         }
@@ -67,6 +71,9 @@ public class User extends Model<User> {
         return findFirst("SELECT * FROM user WHERE phone=?", phone);
     }
 
+    public User findByToken(String token) {
+        return findFirst("SELECT * FROM user WHERE login_token=?", token);
+    }
     public User findByUid(Long uid) {
         return findFirst("SELECT * FROM user WHERE id=?", uid);
     }
@@ -75,4 +82,5 @@ public class User extends Model<User> {
     {
         return find("SELECT id,phone,name,update_time FROM user WHERE inviteid=?", uid);
     }
+    
 }
