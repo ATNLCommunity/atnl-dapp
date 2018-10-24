@@ -23,7 +23,12 @@ public class OrderController extends BaseController
             error("请先登录");
             return;
         }
-
+        User user = User.dao.findById(uid);
+        if (null == user)
+        {
+            error("用户不存在");
+            return;
+        }
         Integer count = getParaToInt("count", 0);
         if (count <= 0)
         {
@@ -74,15 +79,20 @@ public class OrderController extends BaseController
             error("商品数量超过库存");
             return;
         }
-        if (product.getInt(Product.TYPE) != 0 && product.getInt(Product.TYPE) != 2)
+        if (product.getInt(Product.TYPE) != 0 && product.getInt(Product.TYPE) != 2 && product.getInt(Product.TYPE) != 3)
         {
             error("该商品不能兑换");
             return;
         }
         
+        Float pdiscount = product.getFloat(Product.DISCOUNT);
+        if(user.getInt(User.UTYPE) != 3)//直销用户类型3
+        {
+        	pdiscount = 1f;
+        }
         Long qid = getParaToLong("qid", 0L);
 
-        Float price = product.getFloat(Product.PRICE) * count + product.getFloat(Product.YF);
+        Float price = product.getFloat(Product.PRICE) * count * pdiscount + product.getFloat(Product.YF);
         Float realPrice = price;
         Float eth = product.getFloat(Product.ETH);
 
@@ -177,6 +187,22 @@ public class OrderController extends BaseController
         Integer type = getParaToInt("type", 0);
 
         success(Order.dao.getOrders(uid, type));
+    }
+    /**
+     * 直销订单
+     */
+    public void dOrders()
+    {
+        Long uid = getUid();
+        if (uid == null || uid == 0)
+        {
+            error("请先登录");
+            return;
+        }
+
+        Integer type = getParaToInt("type", 0);
+
+        success(Order.dao.getDOrders(uid, type));
     }
 
     public void get()

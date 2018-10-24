@@ -74,6 +74,18 @@ public class Order extends Model<Order>
             return find("SELECT `order`.*,product.price AS pprice,product.eth AS peth,product.count AS pcount,product.send_date,product.name AS pname,product.expire_time,product.logo,product.atnl,product.detail,product.url FROM `order` INNER JOIN product ON product.id=`order`.pid WHERE `order`.uid=? AND `order`.paytype=? AND `order`.state>0", uid, type);
         }
     }
+    
+    public List<Order> getDOrders(Long uid, int type)
+    {
+        if (type == 0)
+        {
+            return find("SELECT `order`.*,product.price AS pprice,product.eth AS peth,product.count AS pcount,product.send_date,product.name AS pname,product.expire_time,product.logo,product.atnl,product.detail,product.url,product.discount FROM `order` INNER JOIN product ON product.id=`order`.pid WHERE `order`.uid=? AND `order`.state>0 and product.type =3", uid);
+        }
+        else
+        {
+            return find("SELECT `order`.*,product.price AS pprice,product.eth AS peth,product.count AS pcount,product.send_date,product.name AS pname,product.expire_time,product.logo,product.atnl,product.detail,product.url,product.discount FROM `order` INNER JOIN product ON product.id=`order`.pid WHERE `order`.uid=? AND `order`.paytype=? AND `order`.state>0 and product.type =3", uid, type);
+        }
+    }
 
     public Order findDetailByOid(Long oid)
     {
@@ -94,5 +106,21 @@ public class Order extends Model<Order>
     public int getOrderCount()
     {
     	return Db.queryLong("SELECT count(*) FROM `order` WHERE pid=42 and paystate = 1 and pay_time > '2018-08-20'").intValue();
+    }
+    
+    /**
+     * 月销售总金额
+     */
+    public float getAmount(Long uid)
+    {
+    	return Db.queryBigDecimal("select sum(realprice) from `order` a left join `product` b on a.pid = b.id WHERE a.state = 2 and a.uid =? ",uid).floatValue();
+    }
+    
+    /**
+     * 
+     */
+    public List<Object> getAmountByMonth(Long uid,String month)
+    {
+    	return Db.query("select sum(realprice) as tmoney,CONCAT(YEAR(pay_time),IF(MONTH(pay_time) > 9,MONTH(pay_time),CONCAT('0',MONTH(pay_time)))) as m from `order` a left join `product` b on a.pid = b.id  WHERE a.state =2 and a.uid =? and b.type =3  GROUP BY m HAVING m < CONCAT(YEAR(NOW()),IF(MONTH(NOW()) > 9,MONTH(NOW()),CONCAT('0',MONTH(NOW())))) and m > ?",uid,month);
     }
 }

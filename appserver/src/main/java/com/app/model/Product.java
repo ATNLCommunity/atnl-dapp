@@ -32,6 +32,7 @@ public class Product extends Model<Product>
     public static final String SEND_DATE_DESC = "send_date_desc";
     public static final String SENDBY = "sendby";
     public static final String FROM_TYPE = "from_type"; // 来源类型
+    public static final String DISCOUNT = "discount"; //折扣率
     
     public Product create(Float oprice, Float price, Float eth, Float atnl, Float gift, Integer count, Integer type, String name, String logo, String detail, String url, String sendDate, String expireTime)
     {
@@ -69,7 +70,7 @@ public class Product extends Model<Product>
     {
         if (type == -1)
         {
-            return find("SELECT * FROM product WHERE expire_time>=NOW() AND count!=0 and from_type = ? ORDER BY id DESC LIMIT 7",from_type);
+            return find("SELECT * FROM product WHERE expire_time>=NOW() AND count!=0 and from_type = ? ORDER BY id DESC",from_type);
         }
         return find("SELECT * FROM product WHERE type=? AND expire_time>=NOW() AND count!=0 and from_type = ? ORDER BY id DESC", type,from_type);
     }

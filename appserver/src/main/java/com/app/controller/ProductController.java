@@ -44,4 +44,17 @@ public class ProductController extends BaseController
 
         success(Product.dao.findProduct(pid));
     }
+    
+    /**
+     * 直销商品
+     */
+    public void getDProducts()
+    {
+    	 Map<String, List<Product>> map = new HashMap<String, List<Product>>();
+         List<Product> type0 = Product.dao.getProducts(3,0);
+         List<Product> type1 = Product.dao.getProducts(3,1);
+         map.put("type0", type0);
+         map.put("type1", type1);
+         success(map);
+    }
 }
